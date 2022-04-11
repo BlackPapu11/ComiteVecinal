@@ -40,8 +40,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/", "/signup", "/encriptar/**").permitAll()
 
 				// Asignar permisos a las URL de acuerdo a los roles
-				.antMatchers("/enlaces/**").hasAnyAuthority("ROL_ADMINISTRADOR").antMatchers("/colonias/**")
-				.hasAnyAuthority("ROL_ENLACE")
+				.antMatchers("/enlaces/**","/administrador/**").hasAnyAuthority("ROL_ADMINISTRADOR")
+				.antMatchers("/colonias/**","/enlace/**").hasAnyAuthority("ROL_ENLACE")
+				.antMatchers("/presidente/**").hasAnyAuthority("ROL_PRESIDENTE")
 
 				// Las demas URL requieren autenticacion
 				.anyRequest().authenticated()
