@@ -27,4 +27,42 @@ public class Municipio {
 	
 	@OneToMany(mappedBy = "municipio", cascade = CascadeType.ALL)
 	private Set<Colonia> Colonia;
+	
+	public Municipio() {
+		
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Set<Colonia> getColonia() {
+		return Colonia;
+	}
+
+	public void setColonia(Set<Colonia> colonia) {
+		Colonia = colonia;
+	}
+	
+	
 }

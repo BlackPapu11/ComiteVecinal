@@ -33,4 +33,50 @@ public class Colonia {
     @JoinColumn(name = "municipio_id", updatable = false, nullable = false)
 	private Municipio municipio;
 
+	public Colonia() {
+		
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(String codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}
+
+	public Set<Comite> getComite() {
+		return comite;
+	}
+
+	public void setComite(Set<Comite> comite) {
+		this.comite = comite;
+	}
+
+	public Municipio getMunicipio() {
+		return municipio;
+	}
+
+	public void setMunicipio(Municipio municipio) {
+		this.municipio = municipio;
+	}
+	
+	
+
 }

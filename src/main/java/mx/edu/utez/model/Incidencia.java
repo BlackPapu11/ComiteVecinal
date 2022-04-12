@@ -50,5 +50,91 @@ public class Incidencia {
 	@OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL)
 	private Set<Anexo> anexo;
 	
+	public Incidencia() {
+		
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Date getFechaRegistro() {
+		return fechaRegistro;
+	}
+
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
+	}
+
+	public boolean isHabilitado() {
+		return habilitado;
+	}
+
+	public void setHabilitado(boolean habilitado) {
+		this.habilitado = habilitado;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public UserComite getUserComite() {
+		return userComite;
+	}
+
+	public void setUserComite(UserComite userComite) {
+		this.userComite = userComite;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
+	public Set<Comentario> getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(Set<Comentario> comentario) {
+		this.comentario = comentario;
+	}
+
+	public Set<Anexo> getAnexo() {
+		return anexo;
+	}
+
+	public void setAnexo(Set<Anexo> anexo) {
+		this.anexo = anexo;
+	}
+	
+	
+	
 }	
 

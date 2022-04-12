@@ -27,6 +27,43 @@ public class Anexo {
     @JoinColumn(name = "comentario_id", updatable = false, nullable = true)
 	private Comentario comentario;
 	
+	public Anexo() {
+		
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getEvidencia() {
+		return evidencia;
+	}
+
+	public void setEvidencia(String evidencia) {
+		this.evidencia = evidencia;
+	}
+
+	public Incidencia getIncidencia() {
+		return incidencia;
+	}
+
+	public void setIncidencia(Incidencia incidencia) {
+		this.incidencia = incidencia;
+	}
+
+	public Comentario getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(Comentario comentario) {
+		this.comentario = comentario;
+	}
+	
+	
 	
 	
 }
