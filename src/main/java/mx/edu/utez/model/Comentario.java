@@ -22,6 +22,9 @@ public class Comentario {
 
 	@Column(nullable = false, length = 45)
 	private String comentario;
+	
+	@Column(nullable = false, length = 10)
+	private int personaMensaje;
 
 	
 	@ManyToOne

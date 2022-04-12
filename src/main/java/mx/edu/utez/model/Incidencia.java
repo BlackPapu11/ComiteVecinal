@@ -33,6 +33,9 @@ public class Incidencia {
 	@Column(columnDefinition = "tinyint not null")
 	private boolean habilitado;
 	
+	@Column(nullable = false, length = 10)
+	private int status;
+	
 	@ManyToOne
     @JoinColumn(name = "user_comite_id", updatable = false, nullable = false)
 	private UserComite userComite;
