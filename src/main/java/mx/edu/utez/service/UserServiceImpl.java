@@ -1,12 +1,16 @@
 package mx.edu.utez.service;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import mx.edu.utez.model.User;
 import mx.edu.utez.repository.UserRepository;
 
 @Service
+@Transactional 
 public class UserServiceImpl implements UserService{
 
 	@Autowired
@@ -28,5 +32,17 @@ public class UserServiceImpl implements UserService{
 	public User buscarPorCorreo(String correo) {
 		return userRepository.findByCorreo(correo);
 	}
+	
+	@Override
+	   public boolean cambiarContrasena(String contrasena, String correo) {
+	       try {
+	           userRepository.updateContrasena(contrasena, correo);
+	           return true;
+	       } catch (Exception exception) {
+	           System.out.println(exception.getMessage());
+	           exception.printStackTrace();
+	           return false;
+	       }
+	   }
 
 }

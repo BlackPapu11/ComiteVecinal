@@ -40,7 +40,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/css/**", "/js/**", "/image/**", "/imagenes/**","/resource/**")
                 .permitAll()
                 // Las URL publicas no requieren autenticacion
-                .antMatchers("/", "/signup", "/encriptar/**").permitAll()
+                .antMatchers("/", "/signup", "/encriptar/**","/reset/password/**").permitAll()
                 .antMatchers("/president/**").permitAll()
                 // Asignar permisos a las URL de acuerdo a los roles
                 .antMatchers("/enlaces/**", "/administrador/**").hasAnyAuthority("ROL_ADMINISTRADOR")

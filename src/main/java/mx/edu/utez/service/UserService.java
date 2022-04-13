@@ -9,5 +9,7 @@ public interface UserService {
 	boolean eliminar(long id);
 
 	User buscarPorCorreo(String correo);
+	
+	boolean cambiarContrasena(String password, String username);
 
 }
