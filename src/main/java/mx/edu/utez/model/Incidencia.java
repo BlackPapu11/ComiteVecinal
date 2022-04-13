@@ -23,35 +23,36 @@ public class Incidencia {
 
 	@Column(nullable = false, length = 45)
 	private String nombre;
-	
+
 	@Column(nullable = true, length = 250)
 	private String descripcion;
-	
+
 	@Column(nullable = false, length = 45)
 	private Date fechaRegistro;
-	
+
 	@Column(columnDefinition = "tinyint not null")
 	private boolean habilitado;
-	
+
 	@Column(nullable = false, length = 10)
 	private int status;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "user_comite_id", updatable = false, nullable = false)
+	@JoinColumn(name = "user_comite_id", updatable = false, nullable = false)
 	private UserComite userComite;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "categoria_id", updatable = false, nullable = false)
+	@JoinColumn(name = "categoria_id", updatable = false, nullable = false)
 	private Categoria categoria;
-	
+
 	@OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL)
 	private Set<Comentario> comentario;
-	
+
 	@OneToMany(mappedBy = "incidencia", cascade = CascadeType.ALL)
 	private Set<Anexo> anexo;
-	
+
 	public Incidencia() {
-		
+		this.comentario = Set.of(new Comentario());
+		this.anexo = Set.of(new Anexo());
 	}
 
 	public Long getId() {
@@ -133,8 +134,13 @@ public class Incidencia {
 	public void setAnexo(Set<Anexo> anexo) {
 		this.anexo = anexo;
 	}
-	
-	
-	
-}	
 
+	public void print() {
+		System.out.println(id
+				+ " \nn- " + nombre
+				+ " \nd- " + descripcion
+				+ " \nc- " + categoria.getId()
+				+ " \ncom- " + comentario);
+	}
+
+}

@@ -67,6 +67,7 @@
 
 	<script th:if="${msg_success != null}">
 		new Toast({
+			timer:2000,
 			message: '[[${msg_success}]]',
 			type: 'success'
 		});

@@ -16,44 +16,47 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
-	@Autowired
-	private SimpleAuthenticationSuccessHandler successHandler;
+    @Autowired
+    private SimpleAuthenticationSuccessHandler successHandler;
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(dataSource)
-				.usersByUsernameQuery("SELECT correo, contrasena, habilitado FROM users WHERE correo = ?")
-				.authoritiesByUsernameQuery("SELECT u.correo, r.authority FROM user_role AS ur "
-						+ "INNER JOIN users AS u ON u.id = ur.user_id "
-						+ "INNER JOIN roles AS r ON r.id = ur.role_id WHERE u.correo  = ?");
-	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication().dataSource(dataSource)
+                .usersByUsernameQuery("SELECT correo, contrasena, habilitado FROM users WHERE correo = ?")
+                .authoritiesByUsernameQuery("SELECT u.correo, r.authority FROM user_role AS ur "
+                        + "INNER JOIN users AS u ON u.id = ur.user_id "
+                        + "INNER JOIN roles AS r ON r.id = ur.role_id WHERE u.correo  = ?");
+    }
 
-	@Override
-	public void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests().antMatchers(
-				// Los recursos estaticos no requieren autenticacion
-				"/css/**", "/js/**", "/image/**", "/imagenes/**").permitAll()
-				// Las URL publicas no requieren autenticacion
-				.antMatchers("/", "/signup", "/encriptar/**").permitAll()
+    @Override
+    public void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .headers().frameOptions().sameOrigin().and()
+                .authorizeRequests().antMatchers(
+                        // Los recursos estaticos no requieren autenticacion
+                        "/css/**", "/js/**", "/image/**", "/imagenes/**","/resource/**")
+                .permitAll()
+                // Las URL publicas no requieren autenticacion
+                .antMatchers("/", "/signup", "/encriptar/**").permitAll()
+                .antMatchers("/president/**").permitAll()
+                // Asignar permisos a las URL de acuerdo a los roles
+                .antMatchers("/enlaces/**", "/administrador/**").hasAnyAuthority("ROL_ADMINISTRADOR")
+                .antMatchers("/colonias/**", "/enlace/**").hasAnyAuthority("ROL_ENLACE")
+                .antMatchers("/presidente/**").hasAnyAuthority("ROL_PRESIDENTE")
 
-				// Asignar permisos a las URL de acuerdo a los roles
-				.antMatchers("/enlaces/**","/administrador/**").hasAnyAuthority("ROL_ADMINISTRADOR")
-				.antMatchers("/colonias/**","/enlace/**").hasAnyAuthority("ROL_ENLACE")
-				.antMatchers("/presidente/**").hasAnyAuthority("ROL_PRESIDENTE")
+                // Las demas URL requieren autenticacion
+                .anyRequest().authenticated()
 
-				// Las demas URL requieren autenticacion
-				.anyRequest().authenticated()
+                // Formulario de inicio de sesion no requiere autenticacion
+                .and().formLogin().successHandler(successHandler).loginPage("/login").permitAll();
+    }
 
-				// Formulario de inicio de sesion no requiere autenticacion
-				.and().formLogin().successHandler(successHandler).loginPage("/login").permitAll();
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }
