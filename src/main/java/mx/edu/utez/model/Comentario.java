@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "comentarios")
 public class Comentario {
@@ -22,20 +24,20 @@ public class Comentario {
 
 	@Column(nullable = false, length = 45)
 	private String comentario;
-	
+
 	@Column(nullable = false, length = 10)
 	private int personaMensaje;
 
-	
 	@ManyToOne
-    @JoinColumn(name = "incidencia_id", updatable = false, nullable = false)
+	@JoinColumn(name = "incidencia_id", updatable = false, nullable = false)
+	@JsonIgnore
 	private Incidencia incidencia;
-	
+
 	@OneToMany(mappedBy = "comentario", cascade = CascadeType.ALL)
 	private Set<Anexo> anexo;
-	
+
 	public Comentario() {
-		
+
 	}
 
 	public Long getId() {
@@ -77,6 +79,5 @@ public class Comentario {
 	public void setAnexo(Set<Anexo> anexo) {
 		this.anexo = anexo;
 	}
-	
-	
+
 }

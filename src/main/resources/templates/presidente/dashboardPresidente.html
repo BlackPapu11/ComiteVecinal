@@ -1,57 +1,801 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>COMVEC | Incidencias</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <!--Toast-->
+    <link rel="stylesheet" th:href="@{/css/toast.min.css}" />
+    <style>
+      .button-link {
+        all: unset;
+        cursor: pointer;
+        color: #dc3545;
+      }
+      .button-link:hover {
+        color: #383838;
+        text-decoration: underline;
+      }
+      .icon-inner,
+      .ionicon,
+      svg {
+        display: inherit !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row mb-5" style="padding-left: 0px; padding-right: 0px">
+        <div class="col" th:insert="~{fragments/header :: header}"></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card mt-5">
+            <div class="card-header">
+              <div class="row">
+                <div class="col h4">Incidencias</div>
+                <div class="col text-right">
+                  <button
+                    class="btn btn-outline-success btn-sm"
+                    data-toggle="modal"
+                    data-target="#registrarIncidencia"
+                  >
+                    <ion-icon
+                      name="add"
+                      style="font-size: 20px; margin-top: 3px"
+                    ></ion-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  Listado
+                  <span id="texto"></span>
+                </div>
+                <div class="col text-right">Buscar</div>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Fecha de registro</th>
+                          <th scope="col">Categoría</th>
+                          <th scope="col">Atención</th>
+                          <th scope="col">Estado</th>
+                          <th scope="col">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="incidence: ${incidencias}">
+                          <td th:text="${incidenceStat.index + 1}"></td>
+                          <td th:text="${incidence.nombre}"></td>
+                          <td
+                            th:text="${#dates.format(incidence.fechaRegistro,'dd-MM-yyyy')}"
+                          ></td>
+                          <td th:text="${incidence.categoria.nombre}"></td>
+                          <td th:switch="${incidence.status}">
+                            <span th:case="1" class="badge badge-light"
+                              >Pendiente</span
+                            >
+                            <span th:case="2" class="badge badge-secondary"
+                              >Cancelada</span
+                            >
+                            <span th:case="3" class="badge badge-info"
+                              >Canalizada</span
+                            >
+                            <span th:case="4" class="badge badge-primary"
+                              >Atendida</span
+                            >
+                          </td>
+                          <td th:switch="${incidence.habilitado}">
+                            <span th:case="true" class="badge badge-success"
+                              >Activo</span
+                            >
+                            <span th:case="false" class="badge badge-danger"
+                              >Inactivo</span
+                            >
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-info btn-sm btn-detalles"
+                              data-toggle="modal"
+                              data-target="#detallesIncidencia"
+                              th:attr="data-id=${incidence.id},data-nombre=${incidence.nombre},
+                              data-descripcion=${incidence.descripcion},data-category=${incidence.categoria.nombre},
+                              data-status=${incidence.status},data-habilitado=${incidence.habilitado},
+                              data-fecha=${incidence.fechaRegistro}"
+                            >
+                              <ion-icon
+                                name="search-outline"
+                                size="small"
+                              ></ion-icon>
+                            </button>
+                            <button
+                              class="btn btn-warning btn-sm btn-editar"
+                              data-toggle="modal"
+                              data-target="#editarIncidencia"
+                              th:attr="data-id=${incidence.id},data-nombre=${incidence.nombre},
+                              data-descripcion=${incidence.descripcion},data-category=${incidence.categoria.id},
+                              data-status=${incidence.status},data-habilitado=${incidence.habilitado},
+                              data-fecha=${incidence.fechaRegistro}"
+                            >
+                              <ion-icon
+                                name="create-outline"
+                                size="small"
+                              ></ion-icon>
+                            </button>
+                            <button
+                              type="button"
+                              th:attr="data-id=${incidence.id}"
+                              class="btn btn-success btn-sm btn-habilitar"
+                              th:if="${!incidence.habilitado}"
+                            >
+                              <ion-icon
+                                name="refresh-outline"
+                                size="small"
+                              ></ion-icon>
+                            </button>
+                            <button
+                              type="button"
+                              th:attr="data-id=${incidence.id}"
+                              class="btn btn-danger btn-sm btn-habilitar"
+                              th:if="${incidence.habilitado}"
+                            >
+                              <ion-icon
+                                name="trash-outline"
+                                size="small"
+                              ></ion-icon>
+                            </button>
+                          </td>
+                          <form
+                            th:action="@{/president/habilitado}"
+                            method="POST"
+                            id="changeHabilitadoForm"
+                          >
+                            <input
+                              type="hidden"
+                              id="cambioDeEstado"
+                              name="incidencia"
+                              th:value="${incidence.id}"
+                            />
+                          </form>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<head>
-	<title>Adoptador</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<!--Toast-->
-	<link rel="stylesheet" th:href="@{/css/toast.min.css}" />
-</head>
+      <!-- Modal Editar -->
+      <form
+        class="needs-validation"
+        novalidate
+        id="incidenceEditForm"
+        th:action="@{/president/update-incidence}"
+        th:object="${editIncidence}"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div
+          class="modal fade"
+          id="editarIncidencia"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          data-backdrop="static"
+          data-keyboard="false"
+        >
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Modificar incidencia
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="form-row">
+                  <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold" for="edNombre"
+                      >Nombre</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="edNombre"
+                      name="edNombre"
+                      th:field="*{nombre}"
+                      placeholder="Nombre de la incidencia"
+                      required
+                    />
+                    <input
+                      type="date"
+                      hidden
+                      id="edFechaRegistro"
+                      th:field="*{fechaRegistro}"
+                    />
+                    <input hidden type="number" id="edId" th:field="*{id}" />
+                    <div class="invalid-feedback">Campo obligatorio</div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold" for="edCategoria"
+                      >Categoría</label
+                    >
+                    <select
+                      class="custom-select"
+                      id="edCategoria"
+                      name="edCategoria"
+                      th:field="*{categoria.id}"
+                      required
+                    >
+                      <option value="">Seleccionar...</option>
+                      <option
+                        th:each="category: ${categorias}"
+                        th:value="${category.id}"
+                        th:text="${category.nombre}"
+                      ></option>
+                    </select>
+                    <div class="invalid-feedback">Campo obligatorio</div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col-md-12 mb-3">
+                    <label class="font-weight-bold" for="edDescripcion"
+                      >Descripción</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="edDescripcion"
+                      name="edDescripcion"
+                      placeholder="Descripción de la incidencia"
+                      required
+                      th:field="*{descripcion}"
+                      rows="3"
+                    ></textarea>
+                    <div class="invalid-feedback">Campo obligatorio</div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col-md-12 mb-3">
+                    <label class="font-weight-bold" for="edFiles">Anexos</label>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,application/pdf"
+                      class="form-control"
+                      id="edFiles"
+                      name="edFiles"
+                      lang="es"
+                      required
+                    />
+                    <div class="invalid-feedback">Seleccionar archivos</div>
+                  </div>
+                </div>
+                <div class="form-row" id="anexosPreview2"></div>
+                <div class="form-row">
+                  <div class="col-md-12 mb-3">
+                    <label class="font-weight-bold" for="files"
+                      >Anexos actuales</label
+                    >
+                    <div id="anexosActuales" class="card-group"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-dismiss="modal"
+                >
+                  <ion-icon name="close" style="font-size: 20px"></ion-icon>
+                  Cerrar
+                </button>
+                <button
+                  type="submit"
+                  id="registrarIncidenciaEdit"
+                  class="btn btn-warning align-middle"
+                >
+                  <ion-icon name="checkmark" style="font-size: 20px"></ion-icon>
+                  <span>Modificar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- Modal Registrar-->
+      <form
+        class="needs-validation"
+        novalidate
+        id="incidenceForm"
+        th:action="@{/president/}"
+        th:object="${incidencia}"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div
+          class="modal fade"
+          id="registrarIncidencia"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          data-backdrop="static"
+          data-keyboard="false"
+        >
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Registrar incidencia
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="form-row">
+                  <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold" for="nombre">Nombre</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="nombre"
+                      name="nombre"
+                      th:field="*{nombre}"
+                      placeholder="Nombre de la incidencia"
+                      required
+                    />
+                    <input
+                      type="date"
+                      hidden
+                      id="fechaHoy"
+                      th:field="*{fechaRegistro}"
+                    />
+                    <div class="invalid-feedback">Campo obligatorio</div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold" for="categoria"
+                      >Categoría</label
+                    >
+                    <select
+                      type="text"
+                      class="custom-select"
+                      id="categoria"
+                      name="categoria"
+                      th:field="*{categoria.id}"
+                      required
+                    >
+                      <option value="">Seleccionar...</option>
+                      <option
+                        th:each="category: ${categorias}"
+                        th:value="${category.id}"
+                        th:text="${category.nombre}"
+                      ></option>
+                    </select>
+                    <div class="invalid-feedback">Campo obligatorio</div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col-md-12 mb-3">
+                    <label class="font-weight-bold" for="description"
+                      >Descripción</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="description"
+                      name="description"
+                      placeholder="Descripción de la incidencia"
+                      th:field="*{descripcion}"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col-md-12 mb-3">
+                    <label class="font-weight-bold" for="comments"
+                      >Comentario extra</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="comments"
+                      name="comments"
+                      th:field="*{comentario[0].comentario}"
+                      placeholder="Comentarios extras de la incidencia"
+                      required
+                      rows="3"
+                    ></textarea>
+                    <div class="invalid-feedback">Campo obligatorio</div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col-md-12 mb-3">
+                    <label class="font-weight-bold" for="files">Anexos</label>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,application/pdf"
+                      class="form-control"
+                      id="files"
+                      name="files"
+                      lang="es"
+                      required
+                    />
+                    <div class="invalid-feedback">Seleccionar archivos</div>
+                  </div>
+                </div>
+                <div class="form-row" id="anexosPreview"></div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-dismiss="modal"
+                >
+                  <ion-icon name="close" style="font-size: 20px"></ion-icon>
+                  Cerrar
+                </button>
+                <button
+                  type="submit"
+                  id="registrarIncidenciaSubmit"
+                  class="btn btn-success align-middle"
+                >
+                  <ion-icon name="checkmark" style="font-size: 20px"></ion-icon>
+                  <span> Registrar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
 
-<body>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-12" style="padding-left: 0px; padding-right: 0px;"
-				th:insert="~{fragments/header :: header}"></div>
+      <div
+        class="modal fade"
+        id="detallesIncidencia"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+        data-backdrop="static"
+        data-keyboard="false"
+      >
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Detalles incidencia
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-row">
+                <div class="col-md-3 mb-3">
+                  <label class="font-weight-bold" for="nombre">Nombre</label>
+                  <p id="dtNombre"></p>
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label class="font-weight-bold" for="categoria"
+                    >Categoría</label
+                  >
+                  <p id="dtCategory"></p>
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label class="font-weight-bold">Estado</label>
+                  <div id="dtHabilitado"></div>
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label class="font-weight-bold">Atención</label>
+                  <div id="dtStatus"></div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-12 mb-3">
+                  <label class="font-weight-bold" for="description"
+                    >Descripción</label
+                  >
+                  <p id="dtDescripcion"></p>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-12 mb-3">
+                  <label class="font-weight-bold" for="comments"
+                    >Comentario extra</label
+                  >
+                  <p></p>
+                  <div id="dtComentarios"></div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-12 mb-3">
+                  <label class="font-weight-bold" for="files">Anexos</label>
+                  <p></p>
+                  <div id="dtAnexos" class="row"></div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                <ion-icon name="close" style="font-size: 20px"></ion-icon>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-			<div class="col-12">
-				<h2 class="text-center mt-3">Hola usuario presidente</h2>
-			</div>
-		</div>
-	</div>
+    <!--Ionicons-->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
 
-	<!--Ionicons-->
-	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <!--Toast-->
+    <script th:src="@{/js/toast.min.js}"></script>
 
-	<!--Toast-->
-	<script th:src="@{/js/toast.min.js}"></script>
+    <script th:if="${msg_success != null}">
+      new Toast({
+        timer: 2000,
+        message: "[[${msg_success}]]",
+        type: "success",
+      });
+    </script>
 
-	<script th:if="${msg_success != null}">
-		new Toast({
-			message: '[[${msg_success}]]',
-			type: 'success'
-		});
-	</script>
+    <script th:if="${msg_error != null}">
+      new Toast({
+        timer: 2000,
+        message: "[[${msg_error}]]",
+        type: "danger",
+      });
+    </script>
 
-	<script th:if="${msg_error != null}">
-		new Toast({
-			message: '[[${msg_error}]]',
-			type: 'danger'
-		});
-	</script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(() => {
+        $(".icon-inner").addClass("icon-inner-in");
 
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-		crossorigin="anonymous"></script>
+        $(".btn-detalles").on("click", function () {
+          let id = $(this).data("id");
+          let nombre = $(this).data("nombre");
+          let category = $(this).data("category");
+          let desc = $(this).data("descripcion");
+          let fecha = $(this).data("fecha");
+          let status = $(this).data("status");
+          let habilitado = $(this).data("habilitado");
+          $("#dtNombre").text(nombre);
+          $("#dtDescripcion").text(desc);
+          $("#dtCategory").text(category);
+          $("#dtFecha").text(fecha);
+          $("#dtHabilitado").html(
+            habilitado
+              ? `<span th:case="true" class="badge badge-success">Activo</span> <span>${fecha}</span>`
+              : `<span th:case="true" class="badge badge-success">Inactivo</span> <span>${fecha}</span>`
+          );
+          let statusBadge = ``;
+          $("#dtStatus").html("");
+          switch (status) {
+            case 1:
+              statusBadge = `<span class="badge badge-light">Pendiente</span>`;
+              break;
+            case 2:
+              statusBadge = `<span class="badge badge-secondary">Cancelada</span>`;
+              break;
+            case 3:
+              statusBadge = `<span class="badge badge-info">Canalizada</span>`;
+              break;
+            case 4:
+              statusBadge = `<span class="badge badge-primary">Atendida</span>`;
+              break;
+          }
+          $("#dtStatus").html(statusBadge);
+          let anexosCards = "";
+          let commentsCards = "";
+          fetch(`http://localhost:8080/president/list/comxos/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+              data?.anexos.map((item) => {
+                let selectImgPdf = item?.evidencia.includes(".pdf")
+                  ? `<iframe src="http://localhost:8080/resource/${item.evidencia}"></iframe>`
+                  : `<img style="width:250px;height:auto" src="/resource/${item.evidencia}" alt="${item.evidencia}" class="img-thumbnail">`;
+                anexosCards += `
+                      <div class="col">
+                        ${selectImgPdf}
+                      </div>
+                      `;
+              });
+              data?.comments.map((item) => {
+                commentsCards += `
+                      <div class="card mb-3">
+                        <div class="card-body">
+                          ${item.comentario}
+                        </div>
+                      </div>`;
+              });
+              $("#dtComentarios").html("");
+              $("#dtComentarios").html(
+                commentsCards ||
+                  `<div class="col">Sin comentarios registrados.</div>`
+              );
+              $("#dtAnexos").html("");
+              $("#dtAnexos").html(
+                anexosCards || `<div class="col">Sin anexos registrados.</div>`
+              );
+            });
+        });
 
-</body>
+        $(".btn-editar").on("click", function () {
+          let id = $(this).data("id");
+          let nombre = $(this).data("nombre");
+          let category = $(this).data("category");
+          let desc = $(this).data("descripcion");
+          let fecha = $(this).data("fecha");
+          $("#edId").val(id);
+          $("#edFechaRegistro").val(fecha);
+          $("#edNombre").val(nombre);
+          $("#edCategoria").val(category);
+          $("#edDescripcion").val(desc);
+          let anexosCards = "";
+          fetch(`http://localhost:8080/president/list/comxos/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+              data?.anexos.map((item) => {
+                let selectImgPdf = item?.evidencia.includes(".pdf")
+                  ? `<iframe style="height:200px;width:auto" src="http://localhost:8080/resource/${item.evidencia}" class="img-thumbnail card-img-top"></iframe>`
+                  : `<img style="height:200px; width:auto" src="/resource/${item.evidencia}" alt="${item.evidencia}" class="img-thumbnail card-img-top">`;
+                anexosCards += `
+                      <div class="card" id="anexo-${item.id}">
+                        ${selectImgPdf}
+                        <div class="text-center">
+                          <button type="button" class="button-link" onclick="deleteAnexo(this)" data-id="${item.id}">Eliminar</button>
+                        </div>
+                      </div>
+                      `;
+              });
+              $("#anexosActuales").html("");
+              $("#anexosActuales").html(
+                anexosCards || `<div class="col">Sin anexos registrados.</div>`
+              );
+            });
+        });
 
+        $("#fechaHoy").val(new Date().toISOString().split("T")[0]);
+        $("#files").on("change", () => {
+          if ($("#files")[0].files.length > 3) {
+            console.log("error");
+          }
+        });
+
+        $(".btn-habilitar").on("click", function () {
+          $("#cambioDeEstado").val($(this).data("id"));
+          $("#changeHabilitadoForm").submit();
+        });
+
+        $("#registrarIncidenciaSubmit").on("click", (event) => {
+          $("#incidenceForm").submit(function (e) {
+            if (!document.getElementById("incidenceForm").checkValidity()) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            $("#incidenceForm").addClass("was-validated");
+          });
+        });
+
+        $("#registrarIncidenciaEdit").on("click", (event) => {
+          console.log("CLICK");
+          $("#incidenceEditForm").submit(function (e) {
+            console.log("SUBMIT");
+            if (!document.getElementById("incidenceEditForm").checkValidity()) {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("NOTSUBMIT");
+            }
+            $("#incidenceEditForm").addClass("was-validated");
+          });
+        });
+        $(".modal").on("hidden.bs.modal", function (e) {
+          console.log("HIDE");
+          document.getElementById("incidenceEditForm").reset();
+          document.getElementById("incidenceForm").reset();
+          $("#anexosPreview").html("");
+          $("#anexosPreview2").html("");
+        });
+        $("input[type=file]").on("change", (event) => {
+          const { files } = event.target;
+          let images = "";
+          $("#anexosPreview").html("");
+          $("#anexosPreview2").html("");
+          Array.from(files).map((item) => {
+            let selectImgPdf = item.type.toLowerCase().includes("pdf")
+              ? `<iframe style="height:200px;width:auto" src="${URL.createObjectURL(
+                  item
+                )}" class="img-thumbnail card-img-top"></iframe>`
+              : `<img style="height:200px; width:auto" src="${URL.createObjectURL(
+                  item
+                )}" alt="${item.name}" class="img-thumbnail card-img-top">`;
+            $("#anexosPreview").append(
+              `<div class="col">${selectImgPdf}<p>${item.name}</p></div>`
+            );
+            $("#anexosPreview2").append(
+              `<div class="col">${selectImgPdf}<p>${item.name}</p></div>`
+            );
+          });
+        });
+      });
+
+      function deleteAnexo(button) {
+        fetch(
+          `http://localhost:8080/president/remove-anexo/${button.dataset.id}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (!data.error) {
+              $("#anexo-" + button.dataset.id).remove();
+              new Toast({
+                timer: 2000,
+                message: "Anexo eliminado correctamente.",
+                type: "success",
+              });
+            } else {
+              new Toast({
+                timer: 2000,
+                message: "No se pudo eliminar el anexo.",
+                type: "error",
+              });
+            }
+          });
+      }
+    </script>
+  </body>
 </html>
