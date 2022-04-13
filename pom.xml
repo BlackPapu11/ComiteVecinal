@@ -66,8 +66,13 @@
 			<version>3.0.11.RELEASE</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+		</dependency>
 
-		<!--Spring security.-->
+
+		<!--Spring security. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -76,8 +81,8 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
-		
-		
+
+
 	</dependencies>
 
 	<build>

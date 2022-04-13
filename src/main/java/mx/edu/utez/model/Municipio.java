@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "municipios")
@@ -20,7 +23,13 @@ public class Municipio {
 	private Long id;
 
 	@Column(nullable = false, length = 45)
+	@NotBlank
+	@Pattern(regexp="^[a-zA-Z\\s]+{2,254}")
 	private String nombre;
+	
+	@NotNull
+	@Column(columnDefinition = "tinyint not null")
+	private boolean habilitado;
 	
 	@OneToOne(mappedBy = "municipio", cascade = CascadeType.ALL)
 	private User user;
@@ -63,6 +72,15 @@ public class Municipio {
 	public void setColonia(Set<Colonia> colonia) {
 		Colonia = colonia;
 	}
+
+	public boolean isHabilitado() {
+		return habilitado;
+	}
+
+	public void setHabilitado(boolean habilitado) {
+		this.habilitado = habilitado;
+	}
+	
 	
 	
 }

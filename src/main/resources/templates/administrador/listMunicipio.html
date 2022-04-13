@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>COMVEC | Categorias</title>
+	<title>COMVEC | Municipios</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<!--Toast-->
@@ -11,15 +11,15 @@
 
 <body>
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-12" style="padding-left: 0px; padding-right: 0px;"
-				th:insert="~{fragments/header :: header}"></div>
+		<div th:insert="~{fragments/header :: header}"></div>
 
-			<div class="container-fluid" style="margin-top:70px;">
+		<div class="row" style="margin-top: 70px;">
+
+			<div class="col-12">
 				<div class="card mt-5">
 					<div class="card-header">
 						<div class="row">
-							<div class="col h4">Categorias</div>
+							<div class="col h4">Municipios</div>
 							<div class="col text-right">
 								<button class="btn btn-outline-success btn-sm" data-toggle="modal"
 									data-target="#registrarIncidencia">
@@ -28,6 +28,7 @@
 							</div>
 						</div>
 					</div>
+
 					<div class="card-body">
 						<div class="row">
 							<div class="col">
@@ -43,51 +44,51 @@
 										<thead>
 											<tr>
 												<th scope="col">#</th>
-												<th scope="col">Nombre de incidencia</th>
+												<th scope="col">Nombre de Municipio</th>
 												<th scope="col">Estado</th>
 												<th scope="col">Acciones</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr th:each="categoria:${listaCategorias}">
-												<td>[[${categoriaStat.index +1}]]</td>
-												<td>[[${categoria.nombre}]]</td>
-												<td th:switch="${categoria.habilitado}">
+											<tr th:each="municipio:${listaMunicipios}">
+												<td>[[${municipioStat.index +1}]]</td>
+												<td>[[${municipio.nombre}]]</td>
+												<td th:switch="${municipio.habilitado}">
 													<span th:case="true" class="badge badge-success">Activo</span>
 													<span th:case="false" class="badge badge-danger">Inactivo</span>
 												</td>
 												<td>
-													<button class="btn btn-warning btn-sm btn-editar" data-toggle="modal"
-														data-target="#editarIncidencia"
-														th:attr="data-id=${categoria.id},data-nombre=${categoria.nombre},data-habilitado=${categoria.habilitado}">
+													<button class="btn btn-warning btn-sm btn-editar"
+														data-toggle="modal" data-target="#editarIncidencia"
+														th:attr="data-id=${municipio.id},data-nombre=${municipio.nombre},data-habilitado=${municipio.habilitado}">
 														<ion-icon name="create-outline" size="small"></ion-icon>
 													</button>
 													<a class="btn btn-danger btn-sm"
-														th:href="@{/administrador/eliminar/{id} (id=${categoria.id})}">
+														th:href="@{/administrador/municipio/eliminar/{id} (id=${municipio.id})}">
 														<ion-icon name="trash-outline" size="small"></ion-icon>
 													</a>
 												</td>
 											</tr>
 										</tbody>
 									</table>
-									<nav th:if="${listaCategorias.totalPages > 0}" aria-label="Page navigation example">
+									<nav th:if="${listaMunicipios.totalPages > 0}" aria-label="Page navigation example">
 										<ul class="pagination justify-content-center">
 											<li class="page-item"
-												th:classappend="${listaCategorias.number == 0 ? 'disabled' : ''}">
-												<a th:href="@{/administrador/(page=${listaCategorias.number - 1})}"
+												th:classappend="${listaMunicipios.number == 0 ? 'disabled' : ''}">
+												<a th:href="@{/administrador/municipio/(page=${listaMunicipios.number - 1})}"
 													class="page-link">Anterior</a>
 											</li>
 
 											<li class="page-item"
-												th:classappend="${i eq listaCategorias.number + 1} ? 'active'"
-												th:each="i : ${#numbers.sequence( 1, listaCategorias.totalPages, 1)}">
+												th:classappend="${i eq listaMunicipios.number + 1} ? 'active'"
+												th:each="i : ${#numbers.sequence( 1, listaMunicipios.totalPages, 1)}">
 												<a class="page-link"
-													th:href="@{/administrador/?page={tmpPag} (tmpPag=${i-1}) }"
+													th:href="@{/administrador/municipio/?page={tmpPag} (tmpPag=${i-1}) }"
 													th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
 											</li>
 											<li class="page-item"
-												th:classappend="${listaCategorias.number == (listaCategorias.totalPages - 1) ? 'disabled' : ''}">
-												<a th:href="@{/administrador/(page=${listaCategorias.number + 1})}"
+												th:classappend="${listaMunicipios.number == (listaMunicipios.totalPages - 1) ? 'disabled' : ''}">
+												<a th:href="@{/administrador/municipio/(page=${listaMunicipios.number + 1})}"
 													class="page-link">Siguiente</a>
 											</li>
 										</ul>
@@ -96,19 +97,20 @@
 							</div>
 						</div>
 					</div>
+
 				</div>
 			</div>
 		</div>
 		<!-- Modal-->
-		<form class="needs-validation" novalidate id="incidenceForm" th:action="@{/administrador/guardar}"
-			th:object="${categoria}" method="POST" enctype="multipart/form-data">
+		<form class="needs-validation" novalidate id="incidenceForm" th:action="@{/administrador/municipio/guardar}"
+			th:object="${municipio}" method="POST" enctype="multipart/form-data">
 			<div class="modal fade" id="registrarIncidencia" tabindex="-1" role="dialog"
 				aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="exampleModalLabel">
-								Registrar Categoria
+								Registrar Municipio
 							</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -119,7 +121,7 @@
 								<div class="col-md-12 mb-3">
 									<label for="nombre">Nombre</label>
 									<input type="text" class="form-control" id="nombre" name="nombre"
-										th:field="*{nombre}" placeholder="Nombre de la categoria" required />
+										th:field="*{nombre}" placeholder="Nombre del Municipio" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-12 mb-3">
@@ -146,16 +148,17 @@
 				</div>
 			</div>
 		</form>
+		
 		<!--Modal editar-->
-		<form class="needs-validation" novalidate id="editarIncidenciaForm" th:action="@{/administrador/guardar}"
-			th:object="${categoria}" method="POST" enctype="multipart/form-data">
+		<form class="needs-validation" novalidate id="editarIncidenciaForm" th:action="@{/administrador/municipio/guardar}"
+			th:object="${municipio}" method="POST" enctype="multipart/form-data">
 			<div class="modal fade" id="editarIncidencia" tabindex="-1" role="dialog"
 				aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="exampleModalLabel">
-								Editar Categoria
+								Editar Municipio
 							</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -167,14 +170,14 @@
 									<input type="hidden" id="edId" th:field="*{id}"/>
 									<label for="nombre">Nombre</label>
 									<input type="text" class="form-control" id="edNombre" name="nombre"
-										th:value="${categoria.nombre}" th:field="*{nombre}" placeholder="" required />
+										 th:field="*{nombre}" placeholder="" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-12 mb-3">
 									<label for="habilitado">Estado</label><br>
-									<input type="radio" name="edHabilitado" id="enabled" value="1" th:field="*{habilitado}"
+									<input type="radio" name="edHabilitado" id="enabled" value="true" th:field="*{habilitado}"
 										required />Habilitado
-									<input type="radio" name="edHabilitado" id="disabled" value="0"
+									<input type="radio" name="edHabilitado" id="disabled" value="false"
 										th:field="*{habilitado}">Inhabilitado
 									<div class="invalid-feedback">Selecciona una opción</div>
 								</div>
@@ -195,6 +198,8 @@
 			</div>
 		</form>
 	</div>
+
+
 
 	<!--Ionicons-->
 	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
@@ -261,10 +266,10 @@
 					$("#disabled").prop('checked',true)
 				}	
 				
+				
 			});
 		});
 	</script>
-
 </body>
 
 </html>

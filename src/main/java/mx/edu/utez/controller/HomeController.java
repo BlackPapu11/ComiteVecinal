@@ -4,17 +4,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import mx.edu.utez.model.Categoria;
 import mx.edu.utez.model.User;
+import mx.edu.utez.service.CategoriaServiceImpl;
 import mx.edu.utez.service.UserServiceImpl;
 
 @Controller
@@ -25,6 +32,9 @@ public class HomeController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private CategoriaServiceImpl categoriaService;
 	
 	@GetMapping("/")
 	public String index() {
@@ -49,12 +59,14 @@ public class HomeController {
 	}
 	
 	@GetMapping("/administrador/dashboard")
-	public String dashboardAdministrador(Authentication authentication, HttpSession session) {
+	public String dashboardAdministrador(Model model,Pageable pageable,Authentication authentication, HttpSession session) {
 	       if (session.getAttribute("user") == null) {
 	           User user = userServiceImpl.buscarPorCorreo(authentication.getName());
 	           user.setContrasena(null);
 	           session.setAttribute("user", user.getPerson().getNombre());
 	       }
+	       Page<Categoria> listaCategoria = categoriaService.listarPaginacion(PageRequest.of(pageable.getPageNumber(), 5, Sort.by("id").descending()));
+		   model.addAttribute("listaCategorias", listaCategoria);
 	       return "administrador/dashboardAdministrador";
 	}
 
