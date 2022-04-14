@@ -22,21 +22,24 @@ public class Colonia {
 
 	@Column(nullable = false, length = 45)
 	private String nombre;
-	
+
 	@Column(nullable = false, length = 5)
 	private String codigoPostal;
-	
+
+	@Column(columnDefinition = "tinyint not null")
+	private boolean status;
+
 	@OneToMany(mappedBy = "colonia", cascade = CascadeType.ALL)
 	private Set<Comite> comite;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "municipio_id", updatable = false, nullable = false)
+	@JoinColumn(name = "municipio_id", updatable = false, nullable = false)
 	private Municipio municipio;
 
 	public Colonia() {
-		
+
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -76,7 +79,13 @@ public class Colonia {
 	public void setMunicipio(Municipio municipio) {
 		this.municipio = municipio;
 	}
-	
-	
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public boolean getStatus() {
+		return status;
+	}
 
 }

@@ -43,7 +43,7 @@ public class SimpleAuthenticationSuccessHandler implements AuthenticationSuccess
 		if (hasAdministradorRole) {
 			redirectStrategy.sendRedirect(request, response, "/administrador/");
 		} else if (hasAdoptadorRole) {
-			redirectStrategy.sendRedirect(request, response, "/enlace/dashboard");
+			redirectStrategy.sendRedirect(request, response, "/enlace/");
 		} else if (hasVoluntarioRole) {
 			redirectStrategy.sendRedirect(request, response, "/president/");
 		} else {

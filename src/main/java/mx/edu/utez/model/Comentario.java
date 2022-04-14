@@ -1,5 +1,6 @@
 package mx.edu.utez.model;
 
+import java.sql.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -27,6 +28,9 @@ public class Comentario {
 
 	@Column(nullable = false, length = 10)
 	private int personaMensaje;
+
+	@Column(nullable = false, length = 45)
+	private Date fechaRegistro;
 
 	@ManyToOne
 	@JoinColumn(name = "incidencia_id", updatable = false, nullable = false)
@@ -78,6 +82,14 @@ public class Comentario {
 
 	public void setAnexo(Set<Anexo> anexo) {
 		this.anexo = anexo;
+	}
+
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
+	}
+
+	public Date getFechaRegistro() {
+		return fechaRegistro;
 	}
 
 }

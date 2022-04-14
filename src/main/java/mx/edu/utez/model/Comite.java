@@ -23,12 +23,14 @@ public class Comite {
 	@Column(nullable = false, length = 45)
 	private String nombreComite;
 
+	@Column(columnDefinition = "tinyint not null")
+	private boolean status;
 
 	@OneToMany(mappedBy = "comite", cascade = CascadeType.ALL)
 	private Set<UserComite> userComite;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "colonia_id", updatable = false, nullable = false)
+	@JoinColumn(name = "colonia_id", updatable = false, nullable = false)
 	private Colonia colonia;
 
 	public Comite() {
@@ -51,6 +53,19 @@ public class Comite {
 		this.nombreComite = nombreComite;
 	}
 
-	
+	public void setColonia(Colonia colonia) {
+		this.colonia = colonia;
+	}
 
+	public Colonia getColonia() {
+		return colonia;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public boolean getStatus() {
+		return status;
+	}
 }

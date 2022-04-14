@@ -1,96 +1,141 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-success" th:fragment="header2">
-	<a class="navbar-brand text-light" href="#">COMVEC</a>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-		aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="collapse navbar-collapse" id="navbarNav">
-		<ul class="navbar-nav">
-			<li class="nav-item active">
-				<a class="nav-link text-light" href="#">Inicio <span class="sr-only">(current)</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-light" href="#">
-					Perros
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-light" href="#">
-					Gatos
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-light" href="#">
-					Noticias
-				</a>
-			</li>
-			<li class="float-right nav-item dropdown">
-				<a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownMenuLink"
-					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Hola [[${session.user.name}]]
-				</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-					<a class="dropdown-item" href="#">Action</a>
-					<a class="dropdown-item" href="#">Another actison</a>
-					<a class="dropdown-item" href="#">Something else here</a>
-				</div>
-			</li>
-		</ul>
-	</div>
+<nav
+  class="navbar navbar-expand-lg navbar-light bg-success"
+  th:fragment="header2"
+>
+  <a class="navbar-brand text-light" href="#">COMVEC</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarNav"
+    aria-controls="navbarNav"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link text-light" href="#"
+          >Inicio <span class="sr-only">(current)</span></a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#"> Perros </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#"> Gatos </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#"> Noticias </a>
+      </li>
+      <li class="float-right nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle text-light"
+          href="#"
+          id="navbarDropdownMenuLink"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Hola [[${session.user.name}]]
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another actison</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+    </ul>
+  </div>
 </nav>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top" th:fragment="header">
-	<a class="navbar-brand text-light" th:href="@{/}">COMVEC</a>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-		aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<ul class="navbar-nav mr-auto">
-			<li class="nav-item active">
-				<a class="nav-link text-light" href="#carouselExampleIndicators">Inicio<span class="sr-only">(current)</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-light" href="#quienesSomos">
-					Sobre nosotros
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-light" href="#pagos">
-					Métodos de pago
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-light" href="#contacto">
-					Contacto
-				</a>
-			</li>
-		</ul>
-		<ul class="navbar-nav mr-automy-2 my-lg-0">
-			<li class="nav-item" sec:authorize="isAnonymous()">
-				<a class="nav-link text-light" th:href="@{/index}">
-					Iniciar Sesión
-				</a>
-			</li>
-			<!--<li class="nav-item" sec:authorize="isAnonymous()">
+<nav
+  class="navbar navbar-expand-lg navbar-light bg-success fixed-top"
+  th:fragment="header"
+>
+  <a class="navbar-brand text-light" th:href="@{/}">COMVEC</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto" th:if="${session.activeRol} == null">
+      <li class="nav-item active">
+        <a class="nav-link text-light" href="#carouselExampleIndicators"
+          >Inicio<span class="sr-only">(current)</span></a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#quienesSomos"> Sobre nosotros </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#pagos"> Métodos de pago </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#contacto"> Contacto </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto" th:if="${session.activeRol} == 'ROL_ENLACE'">
+      <li class="nav-item active">
+        <a class="nav-link text-light" th:href="@{/enlace/}"
+          >Colonias<span class="sr-only">(current)</span></a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" th:href="@{/comite/}">Comités</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" th:href="@{/incidencia-comite/}"
+          >Incidencias</a
+        >
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-automy-2 my-lg-0">
+      <li class="nav-item" sec:authorize="isAnonymous()">
+        <a class="nav-link text-light" th:href="@{/index}"> Iniciar Sesión </a>
+      </li>
+      <!--<li class="nav-item" sec:authorize="isAnonymous()">
 				<a class="nav-link text-light" th:href="@{/index}">
 					Registrarse
 				</a>
 			</li>-->
-			<li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-				<a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button"
-					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<img src="https://www.itcsystem.es/wp-content/uploads/2019/01/avatar-372-456324.png"
-						class="rounded-circle" height="30" alt="Perfil">&nbsp;
-					<span th:if="${session.user != null}" th:text="'Hola ' + ${session.user}"></span>
-				</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="#">Perfil</a>
-					<a class="dropdown-item" href="#">Configuración</a>
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" th:href="@{/logout}">Cerrar sesión</a>
-				</div>
-			</li>
-		</ul>
-	</div>
+      <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+        <a
+          class="nav-link dropdown-toggle text-light"
+          href="#"
+          id="navbarDropdown"
+          role="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <img
+            src="https://www.itcsystem.es/wp-content/uploads/2019/01/avatar-372-456324.png"
+            class="rounded-circle"
+            height="30"
+            alt="Perfil"
+          />&nbsp;
+          <span
+            th:if="${session.user != null}"
+            th:text="'Hola ' + ${session.user}"
+          ></span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Perfil</a>
+          <a class="dropdown-item" href="#">Configuración</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" th:href="@{/logout}">Cerrar sesión</a>
+        </div>
+      </li>
+    </ul>
+  </div>
 </nav>

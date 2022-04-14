@@ -15,6 +15,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "municipios")
 public class Municipio {
@@ -32,9 +34,11 @@ public class Municipio {
 	private boolean habilitado;
 	
 	@OneToOne(mappedBy = "municipio", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private User user;
 	
 	@OneToMany(mappedBy = "municipio", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Set<Colonia> Colonia;
 	
 	public Municipio() {
