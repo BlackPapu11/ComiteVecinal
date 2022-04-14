@@ -117,26 +117,29 @@ public class IncidenciasService {
         incidencia.setComentario(null);
         incidencia.setAnexo(null);
         Incidencia saveIncidencia = incidenciaRepository.saveAndFlush(incidencia);
-        for (Comentario comentario : comentarios) {
-            comentario.setIncidencia(saveIncidencia);
-            comentario.setPersonaMensaje(Integer.parseInt(incidencia.getUserComite().getUser().getId() + ""));
-        }
-        comentarioRepository.saveAllAndFlush(comentarios);
-        Set<Anexo> anexos = new HashSet<>();
-        for (MultipartFile file : files) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            Anexo anexo = new Anexo();
-            anexo.setEvidencia(fileName);
-            anexo.setIncidencia(saveIncidencia);
-            anexos.add(anexo);
-            try {
-                Path anexosIncidencia = Paths.get(path + fileName);
-                file.transferTo(anexosIncidencia);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (saveIncidencia.getId() > 0) {
+            for (Comentario comentario : comentarios) {
+                comentario.setIncidencia(saveIncidencia);
+                comentario.setFechaRegistro(incidencia.getFechaRegistro());
+                comentario.setPersonaMensaje(Integer.parseInt(incidencia.getUserComite().getUser().getId() + ""));
             }
+            comentarioRepository.saveAllAndFlush(comentarios);
+            Set<Anexo> anexos = new HashSet<>();
+            for (MultipartFile file : files) {
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                Anexo anexo = new Anexo();
+                anexo.setEvidencia(fileName);
+                anexo.setIncidencia(saveIncidencia);
+                anexos.add(anexo);
+                try {
+                    Path anexosIncidencia = Paths.get(path + fileName);
+                    file.transferTo(anexosIncidencia);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            anexoRepository.saveAllAndFlush(anexos);
         }
-        anexoRepository.saveAllAndFlush(anexos);
         return saveIncidencia;
     }
 
