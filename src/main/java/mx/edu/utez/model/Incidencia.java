@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "incidencias")
 public class Incidencia {
@@ -38,6 +40,7 @@ public class Incidencia {
 
 	@ManyToOne
 	@JoinColumn(name = "user_comite_id", updatable = false, nullable = false)
+	@JsonIgnore
 	private UserComite userComite;
 
 	@ManyToOne

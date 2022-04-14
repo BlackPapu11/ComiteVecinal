@@ -14,6 +14,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "categorias")
 public class Categoria {
@@ -31,6 +33,7 @@ public class Categoria {
 	private boolean habilitado;
 	
 	@OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Set<Incidencia> incidencia;
 	
 	public Categoria() {

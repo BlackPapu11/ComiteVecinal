@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "people")
 public class Person {
@@ -21,18 +23,19 @@ public class Person {
 
 	@Column(nullable = false, length = 45)
 	private String apellido1;
-	
+
 	@Column(nullable = true, length = 45)
 	private String apellido2;
-	
+
 	@Column(nullable = true, length = 10)
 	private String telefono;
-	
+
 	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private User user;
-	
-	public Person(){
-		
+
+	public Person() {
+
 	}
 
 	public Long getId() {
@@ -60,7 +63,7 @@ public class Person {
 	}
 
 	public String getApellido2() {
-		return apellido2;
+		return apellido2 == null ? "": apellido2;
 	}
 
 	public void setApellido2(String apellido2) {
@@ -82,7 +85,5 @@ public class Person {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	
-	
+
 }

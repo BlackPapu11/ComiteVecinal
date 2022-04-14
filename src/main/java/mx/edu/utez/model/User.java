@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 @Entity
@@ -54,9 +56,11 @@ public class User {
 	
 	@OneToOne
     @JoinColumn(name = "municipio_id", updatable = false, nullable = true)
+	@JsonIgnore
 	private Municipio municipio;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Set<UserComite> userComite;
 	
 

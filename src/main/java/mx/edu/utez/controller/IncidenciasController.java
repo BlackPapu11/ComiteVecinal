@@ -1,7 +1,5 @@
 package mx.edu.utez.controller;
 
-import java.util.Optional;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import mx.edu.utez.model.Incidencia;
 import mx.edu.utez.service.IncidenciasService;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 @RequestMapping("/president")
