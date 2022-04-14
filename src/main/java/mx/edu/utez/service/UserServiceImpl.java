@@ -2,10 +2,17 @@ package mx.edu.utez.service;
 
 
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import mx.edu.utez.model.Municipio;
 import mx.edu.utez.model.User;
 import mx.edu.utez.repository.UserRepository;
 
@@ -18,13 +25,23 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public boolean guardar(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			userRepository.save(user);
+			return true;
+		}catch(Exception ex) {
+			System.err.println(ex.getMessage());
+			return false;
+		}
 	}
 
 	@Override
 	public boolean eliminar(long id) {
-		// TODO Auto-generated method stub
+		boolean exist = userRepository.existsById(id);
+		if(exist) {
+			userRepository.deleteById(id);
+			return !userRepository.existsById(id);
+		}
+		
 		return false;
 	}
 
@@ -45,4 +62,24 @@ public class UserServiceImpl implements UserService{
 	       }
 	   }
 
+	@Override
+	public List<User> listar() {
+		return userRepository.findAll(Sort.by("id"));
+	}
+
+	@Override
+	public User mostrar(long id) {
+		Optional<User> optional=userRepository.findById(id);
+		if(optional.isPresent()) {
+			return optional.get();
+		}
+		return null;
+	}
+
+	@Override
+	public Page<User> listarPaginacion(Pageable page) {
+		return userRepository.findAll(page);
+	}
+
+	
 }

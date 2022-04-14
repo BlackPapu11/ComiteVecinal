@@ -47,6 +47,11 @@ public class RecoverPasswordController {
 	@PostMapping("/reset/password/email")
 	public String enviarContrasenaEmail(@RequestParam("username") String username,
 			RedirectAttributes redirectAttributes) {
+		
+		if(username=="") {
+			redirectAttributes.addFlashAttribute("msg_error", "Ingresa un correo que esté registrado en el sistema.");
+			return "redirect:/login";
+		}
 		// Remove white spaces
 		username = username.replaceAll("[\\s]", "");
 		// Create new password with 12 characters

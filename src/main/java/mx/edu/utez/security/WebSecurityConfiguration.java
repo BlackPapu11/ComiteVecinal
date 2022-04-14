@@ -28,7 +28,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery("SELECT correo, contrasena, habilitado FROM users WHERE correo = ?")
                 .authoritiesByUsernameQuery("SELECT u.correo, r.authority FROM user_role AS ur "
                         + "INNER JOIN users AS u ON u.id = ur.user_id "
-                        + "INNER JOIN roles AS r ON r.id = ur.role_id WHERE u.correo  = ?");
+                        + "INNER JOIN roles AS r ON r.id = ur.role_id WHERE u.correo  = ? ");
     }
 
     @Override
