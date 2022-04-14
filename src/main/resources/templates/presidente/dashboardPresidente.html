@@ -76,6 +76,9 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <tr th:if="${#lists.isEmpty(incidencias)}">
+                          <td colspan="7">Sin incidencias registrados</td>
+                        </tr>
                         <tr th:each="incidence: ${incidencias}">
                           <td th:text="${incidenceStat.index + 1}"></td>
                           <td th:text="${incidence.nombre}"></td>
@@ -709,7 +712,6 @@
             });
         });
 
-        $("#fechaHoy").val(new Date().toISOString().split("T")[0]);
         $("#files").on("change", () => {
           if ($("#files")[0].files.length > 3) {
             console.log("error");
@@ -722,6 +724,7 @@
         });
 
         $("#registrarIncidenciaSubmit").on("click", (event) => {
+          $("#fechaHoy").val(new Date().toISOString().split("T")[0]);
           $("#incidenceForm").submit(function (e) {
             if (!document.getElementById("incidenceForm").checkValidity()) {
               e.preventDefault();
