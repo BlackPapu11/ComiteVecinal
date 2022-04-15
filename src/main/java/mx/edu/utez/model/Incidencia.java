@@ -38,6 +38,11 @@ public class Incidencia {
 	@Column(nullable = false, length = 10)
 	private int status;
 
+	@Column(nullable = true)
+	private double costo;
+	@Column(nullable = true)
+	private boolean pago;
+
 	@ManyToOne
 	@JoinColumn(name = "user_comite_id", updatable = false, nullable = false)
 	@JsonIgnore
@@ -56,6 +61,12 @@ public class Incidencia {
 	public Incidencia() {
 		this.comentario = Set.of(new Comentario());
 		this.anexo = Set.of(new Anexo());
+	}
+
+	public Incidencia(Long id) {
+		this.comentario = Set.of(new Comentario());
+		this.anexo = Set.of(new Anexo());
+		this.id = id;
 	}
 
 	public Long getId() {
@@ -136,6 +147,22 @@ public class Incidencia {
 
 	public void setAnexo(Set<Anexo> anexo) {
 		this.anexo = anexo;
+	}
+
+	public void setCosto(double costo) {
+		this.costo = costo;
+	}
+
+	public double getCosto() {
+		return costo;
+	}
+
+	public void setPago(boolean pago) {
+		this.pago = pago;
+	}
+
+	public boolean getPago() {
+		return pago;
 	}
 
 	public void print() {

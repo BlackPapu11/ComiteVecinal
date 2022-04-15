@@ -504,48 +504,165 @@
               </button>
             </div>
             <div class="modal-body">
-              <div class="form-row">
-                <div class="col-md-3 mb-3">
-                  <label class="font-weight-bold" for="nombre">Nombre</label>
-                  <p id="dtNombre"></p>
-                </div>
-                <div class="col-md-3 mb-3">
-                  <label class="font-weight-bold" for="categoria"
-                    >Categoría</label
+              <ul
+                class="nav nav-tabs nav-pills nav-fill"
+                id="myTab"
+                role="tablist"
+              >
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="home-tab"
+                    data-toggle="tab"
+                    href="#home"
+                    role="tab"
+                    aria-controls="home"
+                    aria-selected="true"
+                    >Detalles</a
                   >
-                  <p id="dtCategory"></p>
-                </div>
-                <div class="col-md-3 mb-3">
-                  <label class="font-weight-bold">Estado</label>
-                  <div id="dtHabilitado"></div>
-                </div>
-                <div class="col-md-3 mb-3">
-                  <label class="font-weight-bold">Atención</label>
-                  <div id="dtStatus"></div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="col-md-12 mb-3">
-                  <label class="font-weight-bold" for="description"
-                    >Descripción</label
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="profile-tab"
+                    data-toggle="tab"
+                    href="#profile"
+                    role="tab"
+                    aria-controls="profile"
+                    aria-selected="false"
+                    >Comentarios</a
                   >
-                  <p id="dtDescripcion"></p>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="col-md-12 mb-3">
-                  <label class="font-weight-bold" for="comments"
-                    >Comentario extra</label
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="contact-tab"
+                    data-toggle="tab"
+                    href="#contact"
+                    role="tab"
+                    aria-controls="contact"
+                    aria-selected="false"
+                    >Anexos</a
                   >
-                  <p></p>
-                  <div id="dtComentarios" class="row"></div>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div
+                  class="tab-pane fade show active"
+                  id="home"
+                  role="tabpanel"
+                  aria-labelledby="home-tab"
+                >
+                  <div class="form-group mt-5">
+                    <div class="form-row">
+                      <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold" for="nombre"
+                          >Nombre</label
+                        >
+                        <p id="dtNombre"></p>
+                      </div>
+                      <div class="col-md-2 mb-3">
+                        <label class="font-weight-bold" for="categoria"
+                          >Categoría</label
+                        >
+                        <p id="dtCategory"></p>
+                      </div>
+                      <div class="col-md-2 mb-3">
+                        <label class="font-weight-bold">Estado</label>
+                        <div id="dtHabilitado"></div>
+                      </div>
+                      <div class="col-md-2 mb-3">
+                        <label class="font-weight-bold">Atención</label>
+                        <div id="dtStatus"></div>
+                      </div>
+                      <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold">Registro</label>
+                        <div id="dtFecha"></div>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="col-md-12 mb-3">
+                        <label class="font-weight-bold" for="description"
+                          >Descripción</label
+                        >
+                        <p id="dtDescripcion"></p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="form-row">
-                <div class="col-md-12 mb-3">
-                  <label class="font-weight-bold" for="files">Anexos</label>
-                  <p></p>
-                  <div id="dtAnexos" class="row"></div>
+                <div
+                  class="tab-pane fade"
+                  id="profile"
+                  role="tabpanel"
+                  aria-labelledby="profile-tab"
+                >
+                  <div class="form-row">
+                    <div class="col-md-12 mb-3 mt-4">
+                      <label class="font-weight-bold" for="comments"
+                        >Comentarios extras</label
+                      >
+                      <div
+                        class="border-top border-bottom mt-1"
+                        style="height: 250px; overflow-y: scroll"
+                        id="dtComentarios"
+                      ></div>
+                      <form
+                        class="needs-validation"
+                        novalidate
+                        method="post"
+                        id="newComment"
+                      >
+                        <div class="form-row mt-1">
+                          <div class="col-12 mb-3">
+                            <label for="addComment" class="font-weight-bold"
+                              >Agregar comentario</label
+                            >
+                            <textarea
+                              class="form-control"
+                              name="addComment"
+                              id="addComment"
+                              rows="2"
+                              required
+                              maxlength="145"
+                              minlength="2"
+                            ></textarea>
+                            <input type="hidden" id="incidenciaFormField" />
+                            <div class="invalid-feedback">
+                              Campo obligatorio
+                            </div>
+                            <input type="number" hidden id="usuarioEscribe" />
+                          </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="col-12 text-right">
+                            <button
+                              type="button"
+                              class="btn btn-success btn-comment"
+                            >
+                              <ion-icon
+                                name="checkmark"
+                                style="font-size: 20px"
+                              ></ion-icon>
+                              Agregar
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="tab-pane fade"
+                  id="contact"
+                  role="tabpanel"
+                  aria-labelledby="contact-tab"
+                >
+                  <div class="form-row">
+                    <div class="col-md-12 mb-3 mt-4">
+                      <label class="font-weight-bold" for="files">Anexos</label>
+                      <div id="dtAnexos" class="row mt-1"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -604,7 +721,8 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
-    <script>
+    <script th:inline="javascript">
+      const user = /*[[${session.user}]]*/ "default";
       $(document).ready(() => {
         $(".icon-inner").addClass("icon-inner-in");
 
@@ -616,14 +734,15 @@
           let fecha = $(this).data("fecha");
           let status = $(this).data("status");
           let habilitado = $(this).data("habilitado");
+          $("#incidenciaFormField").val(id);
           $("#dtNombre").text(nombre);
           $("#dtDescripcion").text(desc);
           $("#dtCategory").text(category);
           $("#dtFecha").text(fecha);
           $("#dtHabilitado").html(
             habilitado
-              ? `<span th:case="true" class="badge badge-success">Activo</span> <span>${fecha}</span>`
-              : `<span th:case="true" class="badge badge-success">Inactivo</span> <span>${fecha}</span>`
+              ? `<span th:case="true" class="badge badge-success">Activo</span>`
+              : `<span th:case="true" class="badge badge-success">Inactivo</span>`
           );
           let statusBadge = ``;
           $("#dtStatus").html("");
@@ -644,32 +763,59 @@
           $("#dtStatus").html(statusBadge);
           let anexosCards = "";
           let commentsCards = "";
+
           fetch(`http://localhost:8080/president/list/comxos/${id}`)
             .then((response) => response.json())
             .then((data) => {
               data?.anexos.map((item) => {
                 let selectImgPdf = item?.evidencia.includes(".pdf")
-                  ? `<iframe src="http://localhost:8080/resource/${item.evidencia}"></iframe>`
-                  : `<img style="width:250px;height:auto" src="/resource/${item.evidencia}" alt="${item.evidencia}" class="img-thumbnail">`;
+                  ? `<iframe src="http://localhost:8080/resource/${item.evidencia}"></iframe><p>${item.evidencia}</p>`
+                  : `<img style="width:250px;height:auto" src="http://localhost:8080/resource/${item.evidencia}" alt="${item.evidencia}" class="img-thumbnail"><p>${item.evidencia}</p>`;
                 anexosCards += `
                       <div class="col">
                         ${selectImgPdf}
                       </div>
                       `;
               });
-              data?.comments.map((item) => {
-                commentsCards += `
-                      <div class="card mb-3">
-                        <div class="card-body">
-                          ${item.comentario}
+              $("#dtComentarios").html("");
+              if (data.comments.length > 0) {
+                data?.comments.map((item) => {
+                  fetch(
+                    `http://localhost:8080/incidencia-comite/persona-comenta/${item.personaMensaje}`
+                  )
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                      let data = responseData.person;
+                      if (user === data.correo) {
+                        $("#usuarioEscribe").val(item.personaMensaje);
+                      }
+                      commentsCards = `
+                      <div class="card m-2  ${
+                        user === data.correo
+                          ? "border-info"
+                          : "border-secondary"
+                      }" id="${item.id}">
+                        <div class="card-body ${
+                          user === data.correo
+                            ? " text-right border-info"
+                            : "border-secondary"
+                        }">
+                          <p>${item.comentario}</p>
+                          <small class="text-muted">${formatDate(
+                            new Date(item.fechaRegistro)
+                          )} - ${data.person.nombre} ${data.person.apellido1} ${
+                        data.person.apellido2
+                      } ${user === data.correo ? "(Tú)" : ""}</small>
                         </div>
                       </div>`;
-              });
-              $("#dtComentarios").html("");
-              $("#dtComentarios").html(
-                commentsCards ||
-                  `<div class="col">Sin comentarios registrados.</div>`
-              );
+                      $("#dtComentarios").append(commentsCards);
+                    });
+                });
+              } else {
+                $("#dtComentarios").html(
+                  `<div>Sin comentarios registrados.</div>`
+                );
+              }
               $("#dtAnexos").html("");
               $("#dtAnexos").html(
                 anexosCards || `<div class="col">Sin anexos registrados.</div>`
@@ -748,6 +894,7 @@
           document.getElementById("incidenceForm").reset();
           $("#anexosPreview").html("");
           $("#anexosPreview2").html("");
+          $("#home-tab").click();
         });
         $("input[type=file]").on("change", (event) => {
           const { files } = event.target;
@@ -770,8 +917,60 @@
             );
           });
         });
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $(".btn-comment").on("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (document.getElementById("newComment").checkValidity()) {
+            let commentBody = {
+              personaMensaje: user,
+              fechaRegistro: new Date().toISOString().split("T")[0],
+              comentario: $("#addComment").val(),
+              idIncidencia: parseInt($("#incidenciaFormField").val()),
+            };
+            fetch(`http://localhost:8080/incidencia-comite/save-comentario`, {
+              method: "POST",
+              credentials: "same-origin",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(commentBody),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                const { comentario, person } = data;
+                let commentReceived = `
+                      <div class="card m-2 border-info">
+                        <div class="card-body text-right border-info">
+                          <p>${commentBody.comentario}</p>
+                          <small class="text-muted">${formatDate(
+                            new Date(commentBody.fechaRegistro)
+                          )} - ${person.person.nombre} ${
+                  person.person.apellido1
+                } ${person.person.apellido2} (Tú)</small>
+                        </div>
+                      </div>`;
+                $("#dtComentarios").append(commentReceived);
+                $("#addComment").val("");
+                $("#newComment").removeClass("was-validated");
+              });
+          }
+          $("#newComment").addClass("was-validated");
+        });
       });
 
+      function padTo2Digits(num) {
+        return num.toString().padStart(2, "0");
+      }
+
+      function formatDate(date) {
+        return [
+          padTo2Digits(date.getDate()),
+          padTo2Digits(date.getMonth() + 1),
+          date.getFullYear(),
+        ].join("-");
+      }
       function deleteAnexo(button) {
         fetch(
           `http://localhost:8080/president/remove-anexo/${button.dataset.id}`

@@ -94,20 +94,22 @@ public class IncidenciasService {
     public Incidencia updateIncidence(Incidencia incidencia, MultipartFile[] files, String path) {
         Incidencia saveIncidencia = incidenciaRepository.saveAndFlush(incidencia);
         Set<Anexo> anexos = new HashSet<>();
-        for (MultipartFile file : files) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            Anexo anexo = new Anexo();
-            anexo.setEvidencia(fileName);
-            anexo.setIncidencia(saveIncidencia);
-            anexos.add(anexo);
-            try {
-                Path anexosIncidencia = Paths.get(path + fileName);
-                file.transferTo(anexosIncidencia);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (files.length > 0) {
+            for (MultipartFile file : files) {
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename()).replace(" ", "_");
+                Anexo anexo = new Anexo();
+                anexo.setEvidencia(fileName);
+                anexo.setIncidencia(saveIncidencia);
+                anexos.add(anexo);
+                try {
+                    Path anexosIncidencia = Paths.get(path + fileName);
+                    file.transferTo(anexosIncidencia);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            anexoRepository.saveAllAndFlush(anexos);
         }
-        anexoRepository.saveAllAndFlush(anexos);
         return saveIncidencia;
     }
 
@@ -126,7 +128,7 @@ public class IncidenciasService {
             comentarioRepository.saveAllAndFlush(comentarios);
             Set<Anexo> anexos = new HashSet<>();
             for (MultipartFile file : files) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename()).replace(" ", "_");
                 Anexo anexo = new Anexo();
                 anexo.setEvidencia(fileName);
                 anexo.setIncidencia(saveIncidencia);
