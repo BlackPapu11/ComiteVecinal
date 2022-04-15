@@ -40,7 +40,8 @@ public class Incidencia {
 
 	@Column(nullable = true)
 	private double costo;
-	@Column(nullable = true)
+	
+	@Column(nullable = true,columnDefinition = "tinyint null")
 	private boolean pago;
 
 	@ManyToOne

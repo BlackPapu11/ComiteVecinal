@@ -59,7 +59,7 @@
 												</td>
 												<td>[[${usuario.person.telefono}]]</td>
 												<td>[[${usuario.correo}]]</td>
-												<td th:text="${usuario.municipio} ? ${usuario.municipio.nombre} : ''">
+												<td th:text="${usuario.municipio} ? ${usuario.municipio.nombre} : 'N/A'">
 												</td>
 												<td th:switch="${usuario.habilitado}">
 													<span th:case="true" class="badge badge-success">Activo</span>

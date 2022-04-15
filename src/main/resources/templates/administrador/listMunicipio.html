@@ -102,7 +102,7 @@
 			</div>
 		</div>
 		<!-- Modal-->
-		<form class="needs-validation" novalidate id="incidenceForm" th:action="@{/administrador/municipio/guardar}"
+		<form class="needs-validation" novalidate id="incidenceForm" th:action=""
 			th:object="${municipio}" method="POST" enctype="multipart/form-data">
 			<div class="modal fade" id="registrarIncidencia" tabindex="-1" role="dialog"
 				aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -210,6 +210,7 @@
 
 	<script th:if="${msg_success != null}">
 		new Toast({
+			timer:3000,
 			message: '[[${msg_success}]]',
 			type: 'success'
 		});
@@ -217,6 +218,7 @@
 
 	<script th:if="${msg_error != null}">
 		new Toast({
+			timer:3000,
 			message: '[[${msg_error}]]',
 			type: 'danger'
 		});
