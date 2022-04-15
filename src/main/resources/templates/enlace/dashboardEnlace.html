@@ -64,12 +64,10 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <div th:if="${!#lists.isEmpty(colonias)}">
-                          <div
-                            id="municipio"
-                            th:attr="data-id=${colonias[0].municipio.id}"
-                          ></div>
-                        </div>
+                        <div
+                          id="municipio"
+                          th:attr="data-id=${municipioId}"
+                        ></div>
                         <tr th:if="${#lists.isEmpty(colonias)}">
                           <td colspan="6">Sin registros</td>
                         </tr>

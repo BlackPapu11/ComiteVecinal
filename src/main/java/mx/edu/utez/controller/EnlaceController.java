@@ -30,6 +30,7 @@ public class EnlaceController {
 		model.addAttribute("colonia", new Colonia());
 		model.addAttribute("editColonia", new Colonia());
 		model.addAttribute("colonias", coloniaService.findAll(authentication.getName()));
+		model.addAttribute("municipioId", coloniaService.findMunicipioIdByCorreo(authentication.getName()));
 		return "/enlace/dashboardEnlace";
 	}
 

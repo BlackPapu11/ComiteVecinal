@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import mx.edu.utez.model.Colonia;
 import mx.edu.utez.repository.ColoniaRepository;
+import mx.edu.utez.repository.MunicipioRepository;
 import mx.edu.utez.repository.UserRepository;
 
 @Service
@@ -23,6 +24,11 @@ public class ColoniaService {
     public List<Colonia> findAll(String correo) {
         long id = userRepository.findByCorreo(correo).getMunicipio().getId();
         return coloniaRepository.findAllByMunicipioId(id);
+    }
+    
+    @Transactional(readOnly = true)
+    public long findMunicipioIdByCorreo(String correo) {
+        return userRepository.findByCorreo(correo).getMunicipio().getId();
     }
 
     @Transactional(rollbackFor = { SQLException.class })
