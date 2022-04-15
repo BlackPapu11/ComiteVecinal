@@ -298,6 +298,49 @@
                         <p id="dtDescripcion"></p>
                       </div>
                     </div>
+                    <form
+                      method="post"
+                      class="needs-validation"
+                      novalidate
+                      id="atenttionForm"
+                    >
+                      <div class="form-row">
+                        <div class="col-4 mb-3">
+                          <label class="font-weight-bold" for="changeAttention"
+                            >Atención</label
+                          >
+                          <select
+                            name="changeAttention"
+                            id="changeAttention"
+                            class="custom-select"
+                            required
+                          >
+                            <option value="" selected>Seleccionar...</option>
+                            <option value="4">Atendida</option>
+                            <option value="3">Canalizada</option>
+                            <option value="2">Cancelada</option>
+                          </select>
+                          <div class="invalid-feedback">Campo obligatorio</div>
+                        </div>
+                        <div class="col-4" id="pay"></div>
+                        <div class="col-4" id="cost"></div>
+                      </div>
+                      <div class="form-row">
+                        <div class="col-12 text-right">
+                          <button
+                            id="btn-attention"
+                            type="button"
+                            class="btn btn-warning"
+                          >
+                            <ion-icon
+                              name="checkmark"
+                              style="font-size: 20px"
+                            ></ion-icon>
+                            Actualizar
+                          </button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
                 <div
@@ -309,15 +352,19 @@
                   <div class="form-row">
                     <div class="col-md-12 mb-3 mt-4">
                       <label class="font-weight-bold" for="comments"
-                        >Comentario extra</label
+                        >Comentarios extras</label
                       >
-                      <p></p>
                       <div
-                        class="border-top border-bottom"
+                        class="border-top border-bottom mt-1"
                         style="height: 250px; overflow-y: scroll"
                         id="dtComentarios"
                       ></div>
-                      <form>
+                      <form
+                        class="needs-validation"
+                        novalidate
+                        method="post"
+                        id="newComment"
+                      >
                         <div class="form-row mt-1">
                           <div class="col-12 mb-3">
                             <label for="addComment" class="font-weight-bold"
@@ -328,12 +375,27 @@
                               name="addComment"
                               id="addComment"
                               rows="2"
+                              required
+                              maxlength="145"
+                              minlength="2"
                             ></textarea>
+                            <input type="hidden" id="incidenciaFormField" />
+                            <div class="invalid-feedback">
+                              Campo obligatorio
+                            </div>
+                            <input type="number" hidden id="usuarioEscribe" />
                           </div>
                         </div>
                         <div class="form-row">
                           <div class="col-12 text-right">
-                            <button type="button" class="btn btn-success">
+                            <button
+                              type="button"
+                              class="btn btn-success btn-comment"
+                            >
+                              <ion-icon
+                                name="checkmark"
+                                style="font-size: 20px"
+                              ></ion-icon>
                               Agregar
                             </button>
                           </div>
@@ -351,15 +413,14 @@
                   <div class="form-row">
                     <div class="col-md-12 mb-3 mt-4">
                       <label class="font-weight-bold" for="files">Anexos</label>
-                      <p></p>
-                      <div id="dtAnexos" class="row"></div>
+                      <div id="dtAnexos" class="row mt-1"></div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">
+              <button type="submit" class="btn btn-danger" data-dismiss="modal">
                 <ion-icon name="close" style="font-size: 20px"></ion-icon>
                 Cerrar
               </button>
@@ -446,6 +507,7 @@
           let fecha = $(this).data("fecha");
           let status = $(this).data("status");
           let habilitado = $(this).data("habilitado");
+          $("#incidenciaFormField").val(id);
           $("#dtNombre").text(nombre);
           $("#dtDescripcion").text(desc);
           $("#dtCategory").text(category);
@@ -457,8 +519,12 @@
           );
           let statusBadge = ``;
           $("#dtStatus").html("");
+          $("#atenttionForm").addClass("d-none");
+          $("#newComment").addClass("d-none");
           switch (status) {
             case 1:
+              $("#atenttionForm").removeClass("d-none");
+              $("#newComment").removeClass("d-none");
               statusBadge = `<span class="badge badge-light">Pendiente</span>`;
               break;
             case 2:
@@ -481,37 +547,52 @@
               data?.anexos.map((item) => {
                 let selectImgPdf = item?.evidencia.includes(".pdf")
                   ? `<iframe src="http://localhost:8080/resource/${item.evidencia}"></iframe><p>${item.evidencia}</p>`
-                  : `<img style="width:250px;height:auto" src="/resource/${item.evidencia}" alt="${item.evidencia}" class="img-thumbnail"><p>${item.evidencia}</p>`;
+                  : `<img style="width:250px;height:auto" src="http://localhost:8080/resource/${item.evidencia}" alt="${item.evidencia}" class="img-thumbnail"><p>${item.evidencia}</p>`;
                 anexosCards += `
                       <div class="col">
                         ${selectImgPdf}
                       </div>
                       `;
               });
-              data?.comments.map((item) => {
-                fetch(
-                  `http://localhost:8080/incidencia-comite/persona-comenta/${item.personaMensaje}`
-                )
-                  .then((response) => response.json())
-                  .then((data) => {
-                    console.log(data);
-                    commentsCards += `
-                      <div class="card m-2" id="${item.id}">
+              $("#dtComentarios").html("");
+              if (data.comments.length > 0) {
+                data?.comments.map(async (item) => {
+                  await fetch(
+                    `http://localhost:8080/incidencia-comite/persona-comenta/${item.personaMensaje}`
+                  )
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                      let data = responseData.person;
+                      if (user === data.correo) {
+                        $("#usuarioEscribe").val(item.personaMensaje);
+                      }
+                      commentsCards = `
+                      <div class="card m-2  ${
+                        user === data.correo
+                          ? "border-info"
+                          : "border-secondary"
+                      }" id="${item.id}">
                         <div class="card-body ${
-                          user === data.correo && " text-right"
+                          user === data.correo
+                            ? " text-right border-info"
+                            : "border-secondary"
                         }">
                           <p>${item.comentario}</p>
-                          <p>${item.fechaRegistro} - ${data.person.nombre} ${
-                      data.person.apellido1
-                    } ${data.person.apellido2}</>
+                          <small class="text-muted">${formatDate(
+                            new Date(item.fechaRegistro)
+                          )} - ${data.person.nombre} ${data.person.apellido1} ${
+                        data.person.apellido2
+                      } ${user === data.correo ? "(Tú)" : ""}</small>
                         </div>
                       </div>`;
-                  });
-              });
-              $("#dtComentarios").html("");
-              $("#dtComentarios").html(
-                commentsCards || `<div>Sin comentarios registrados.</div>`
-              );
+                      $("#dtComentarios").append(commentsCards);
+                    });
+                });
+              } else {
+                $("#dtComentarios").html(
+                  `<div>Sin comentarios registrados.</div>`
+                );
+              }
               $("#dtAnexos").html("");
               $("#dtAnexos").html(
                 anexosCards || `<div class="col">Sin anexos registrados.</div>`
@@ -522,7 +603,152 @@
           $("#home-tab").click();
         });
         $('[data-toggle="tooltip"]').tooltip();
+
+        $(".btn-comment").on("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (document.getElementById("newComment").checkValidity()) {
+            let commentBody = {
+              personaMensaje: user,
+              fechaRegistro: new Date().toISOString().split("T")[0],
+              comentario: $("#addComment").val(),
+              idIncidencia: parseInt($("#incidenciaFormField").val()),
+            };
+            fetch(`http://localhost:8080/incidencia-comite/save-comentario`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(commentBody),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                const { comentario, person } = data;
+                let commentReceived = `
+                      <div class="card m-2 border-info">
+                        <div class="card-body text-right border-info">
+                          <p>${commentBody.comentario}</p>
+                          <small class="text-muted">${formatDate(
+                            new Date(commentBody.fechaRegistro)
+                          )} - ${person.person.nombre} ${
+                  person.person.apellido1
+                } ${person.person.apellido2} (Tú)</small>
+                        </div>
+                      </div>`;
+                $("#dtComentarios").append(commentReceived);
+                $("#addComment").val("");
+                $("#newComment").removeClass("was-validated");
+              });
+          }
+          $("#newComment").addClass("was-validated");
+        });
+        $("#changeAttention").on("change", function (event) {
+          let attention = $(this).find(":selected").val();
+          let text = $(this).find(":selected").text();
+          if (attention === "3" && text === "Canalizada") {
+            $("#pay").html(`<label class="font-weight-bold" for="pago"
+                            >¿Debe realizar algún pago?</label
+                          >
+                          <select name="pago" id="pago" class="custom-select" required>
+                            <option value="" selected>Seleccionar...</option>
+                            <option value="1">Sí</option>
+                            <option value="2">No</option>
+                          </select>
+                          <div class="invalid-feedback">Campo obligatorio</div>`);
+          } else {
+            $("#pay").html("");
+          }
+        });
+        $("#pay").on("change", function (event) {
+          let attention = $(this).find(":selected").val();
+          let text = $(this).find(":selected").text();
+          if (attention === "1" && text === "Sí") {
+            $("#cost").html(`<label class="font-weight-bold" for="pago"
+                            >Costo</label
+                          >
+                          <input
+                            class="form-control"
+                            type="text"
+                            required
+                            placeholder="1502.56"
+                            minlength="1"
+                            id="costoIncidencia"
+                            pattern="^(-?)(0|([1-9][0-9]*))(\.[0-9]{1,2})?$"
+                          />
+                          <div class="invalid-feedback" id="validityRequired">Campo obligatorio</div>
+                          <div class="invalid-feedback" id="validityFloat">Ingrese un número decimal (N.##)</div>`);
+          } else {
+            $("#cost").html("");
+          }
+        });
+        const constraint = new RegExp(
+          "^(-?)(0|([1-9][0-9]*))(\.[0-9]{1,2})?$",
+          ""
+        );
+        $("#costoIncidencia").on("change", function () {
+          if (constraint.test($(this).val())) {
+            $("#validityFloat").removeClass("d-none");
+          } else {
+            $("#validityFloat").addClass("d-none");
+          }
+        });
+        $("#btn-attention").on("click", function (event) {
+          $("#atenttionForm").addClass("was-validated");
+          event.preventDefault();
+          event.stopPropagation();
+          if (document.getElementById("atenttionForm").checkValidity()) {
+            let incidenciaBody = {
+              id: $("#incidenciaFormField").val(),
+              status: $("#changeAttention").val(),
+              costo: parseFloat($("#costoIncidencia").val()) || -1,
+              pago: false,
+            };
+            fetch(
+              `http://localhost:8080/incidencia-comite/cambiar-atencion-incidencia`,
+              {
+                method: "POST",
+                body: JSON.stringify(incidenciaBody),
+                credentials: "same-origin",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.error) {
+                  new Toast({
+                    timer: 2000,
+                    message: "Ocurrio un error",
+                    type: "error",
+                  });
+                } else {
+                  new Toast({
+                    timer: 2000,
+                    message: "Se ha cambiado la atención de la incidencia.",
+                    type: "success",
+                  });
+                  $("#detallesIncidencia").modal("hide");
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                }
+              });
+          }
+        });
       });
+
+      function padTo2Digits(num) {
+        return num.toString().padStart(2, "0");
+      }
+
+      function formatDate(date) {
+        return [
+          padTo2Digits(date.getDate()),
+          padTo2Digits(date.getMonth() + 1),
+          date.getFullYear(),
+        ].join("-");
+      }
     </script>
   </body>
 </html>

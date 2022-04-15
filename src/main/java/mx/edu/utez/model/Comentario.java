@@ -41,7 +41,13 @@ public class Comentario {
 	private Set<Anexo> anexo;
 
 	public Comentario() {
+	}
 
+	public Comentario(String comentario, int personaMensaje, Date fechaRegistro, Incidencia incidencia) {
+		this.comentario = comentario;
+		this.personaMensaje = personaMensaje;
+		this.fechaRegistro = fechaRegistro;
+		this.incidencia = incidencia;
 	}
 
 	public Long getId() {
