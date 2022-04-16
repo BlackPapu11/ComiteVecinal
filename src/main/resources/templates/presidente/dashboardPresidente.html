@@ -10,6 +10,7 @@
     />
     <!--Toast-->
     <link rel="stylesheet" th:href="@{/css/toast.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/datatables.css}" />
     <style>
       .button-link {
         all: unset;
@@ -53,18 +54,11 @@
               </div>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  Listado
-                  <span id="texto"></span>
-                </div>
-                <div class="col text-right">Buscar</div>
-              </div>
-              <div class="row mt-4">
+              <div class="row mt-1">
                 <div class="col">
                   <div class="table-responsive">
-                    <table class="table">
-                      <thead>
+                    <table class="table table-sm table-hover" id="incidenciasTable">
+                      <thead class="thead-light">
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">Nombre</th>
@@ -124,8 +118,19 @@
                               ></ion-icon>
                             </button>
                             <button
+                              class="btn btn-warning btn-sm"
+                              th:if="${!incidence.habilitado || incidence.status != 1}"
+                              disabled
+                            >
+                              <ion-icon
+                                name="create-outline"
+                                size="small"
+                              ></ion-icon>
+                            </button>
+                            <button
                               class="btn btn-warning btn-sm btn-editar"
                               data-toggle="modal"
+                              th:if="${incidence.habilitado && incidence.status == 1}"
                               data-target="#editarIncidencia"
                               th:attr="data-id=${incidence.id},data-nombre=${incidence.nombre},
                               data-descripcion=${incidence.descripcion},data-category=${incidence.categoria.id},
@@ -152,7 +157,18 @@
                               type="button"
                               th:attr="data-id=${incidence.id}"
                               class="btn btn-danger btn-sm btn-habilitar"
-                              th:if="${incidence.habilitado}"
+                              th:if="${incidence.habilitado && incidence.status == 1}"
+                            >
+                              <ion-icon
+                                name="trash-outline"
+                                size="small"
+                              ></ion-icon>
+                            </button>
+                            <button
+                              type="button"
+                              disabled
+                              class="btn btn-danger btn-sm"
+                              th:if="${incidence.habilitado && incidence.status != 1}"
                             >
                               <ion-icon
                                 name="trash-outline"
@@ -707,10 +723,11 @@
     </script>
 
     <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
       crossorigin="anonymous"
     ></script>
+    <script th:src="@{/js/datatables.js}"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -725,6 +742,37 @@
       const user = /*[[${session.user}]]*/ "default";
       $(document).ready(() => {
         $(".icon-inner").addClass("icon-inner-in");
+
+        $("#incidenciasTable").DataTable({
+          language: {
+            sProcessing: "Procesando...",
+            sLengthMenu: "Mostrar _MENU_ registros",
+            sZeroRecords: "No se encontraron resultados",
+            sEmptyTable: "Ningún dato disponible en esta tabla",
+            sInfo:
+              "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            sInfoEmpty:
+              "Mostrando registros del 0 al 0 de un total de 0 registros",
+            sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+            sInfoPostFix: "",
+            sSearch: "Buscar:",
+            sUrl: "",
+            sInfoThousands: ",",
+            sLoadingRecords: "Cargando...",
+            oPaginate: {
+              sFirst: "Primero",
+              sLast: "Último",
+              sNext: "Siguiente",
+              sPrevious: "Anterior",
+            },
+            oAria: {
+              sSortAscending:
+                ": Activar para ordenar la columna de manera ascendente",
+              sSortDescending:
+                ": Activar para ordenar la columna de manera descendente",
+            },
+          },
+        });
 
         $(".btn-detalles").on("click", function () {
           let id = $(this).data("id");
@@ -746,8 +794,10 @@
           );
           let statusBadge = ``;
           $("#dtStatus").html("");
+          $("#newComment").addClass("d-none");
           switch (status) {
             case 1:
+              $("#newComment").removeClass("d-none");
               statusBadge = `<span class="badge badge-light">Pendiente</span>`;
               break;
             case 2:
