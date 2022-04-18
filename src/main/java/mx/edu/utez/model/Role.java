@@ -45,6 +45,15 @@ public class Role {
 	public void setAuthority(String authority) {
 		this.authority = authority;
 	}
+
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
+	
 	
 	
 

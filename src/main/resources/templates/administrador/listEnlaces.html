@@ -2,18 +2,20 @@
 <html>
 
 <head>
-	<title>COMVEC | Enlaces</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<!--Toast-->
-	<link rel="stylesheet" th:href="@{/css/toast.min.css}" />
+<title>COMVEC | Enlaces</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<!--Toast-->
+<link rel="stylesheet" th:href="@{/css/toast.min.css}" />
 </head>
 
 <body>
 	<div class="container-fluid">
 		<div th:insert="~{fragments/header :: header}"></div>
 
-		<div class="row" style="margin-top:70px">
+		<div class="row" style="margin-top: 70px">
 
 			<div class="col-12">
 				<div class="card mt-5">
@@ -21,19 +23,18 @@
 						<div class="row">
 							<div class="col h4">Enlaces</div>
 							<div class="col text-right">
-								<button class="btn btn-outline-success btn-sm" data-toggle="modal"
-									data-target="#registrarIncidencia">
+								<button class="btn btn-outline-success btn-sm"
+									data-toggle="modal" data-target="#registrarIncidencia">
 									<ion-icon name="add" style="font-size: 20px; margin-top: 3px"></ion-icon>
 								</button>
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="card-body">
 						<div class="row">
 							<div class="col">
-								Listado
-								<span id="texto"></span>
+								Listado <span id="texto"></span>
 							</div>
 							<div class="col text-right">Buscar</div>
 						</div>
@@ -57,23 +58,25 @@
 										<tbody>
 											<tr th:each="usuario:${listaEnlaces}">
 												<td>[[${usuarioStat.index +1}]]</td>
-												<td> 
-													<img th:src="@{/imagenes/{i} (i = ${usuario.foto})}"
-												class="rounded float-left" width="100" height="100" alt="...">
-												</td>
-												<td>[[${usuario.person.nombre}+' '+${usuario.person.apellido1}+'
+												<td><img
+													th:src="@{/imagenes/{i} (i = ${usuario.foto})}"
+													class="rounded float-left" width="100" height="100"
+													alt="..."></td>
+												<td>[[${usuario.person.nombre}+'
+													'+${usuario.person.apellido1}+'
 													'+${usuario.person.apellido2}]]</td>
 												<td>[[${usuario.numeroEmpleado}]]</td>
 												<td>[[${usuario.person.telefono}]]</td>
 												<td>[[${usuario.correo}]]</td>
-												<td th:text="${usuario.municipio} ? ${usuario.municipio.nombre} : ''">
+												<td
+													th:text="${usuario.municipio} ? ${usuario.municipio.nombre} : ''">
 												</td>
-												<td th:switch="${usuario.habilitado}">
-													<span th:case="true" class="badge badge-success">Activo</span>
-													<span th:case="false" class="badge badge-danger">Inactivo</span>
+												<td th:switch="${usuario.habilitado}"><span
+													th:case="true" class="badge badge-success">Activo</span> <span
+													th:case="false" class="badge badge-danger">Inactivo</span>
 												</td>
 												<td>
-												<button class="btn btn-warning btn-sm btn-editar col-12"
+													<button class="btn btn-warning btn-sm btn-editar col-12"
 														data-toggle="modal" data-target="#editarIncidencia"
 														th:attr="data-id=${usuario.id},
 														data-foto=${usuario.foto},
@@ -81,32 +84,32 @@
 														data-apellido1=${usuario.person.apellido1},
 														data-apellido2=${usuario.person.apellido2},
 														data-telefono=${usuario.person.telefono},
-														data-numeroEmpleado=${usuario.numeroEmpleado},
+														data-empleado=${usuario.numeroEmpleado},
 														data-correo=${usuario.correo},
-														data-municipio=${usuario.municipio.nombre},
+														data-municipio=${usuario.municipio.id},
 														data-habilitado=${usuario.habilitado}
 														">
 														<ion-icon name="create-outline" size="small"></ion-icon>
 													</button>
-													<form th:action="@{/administrador/usuario/enlace/habilitacion}"
+													<form
+														th:action="@{/administrador/usuario/enlace/habilitacion}"
 														method="POST">
-														<input type="hidden" name="userId" th:value="${usuario.id}" />
-														<div th:if="${usuario.habilitado}"> 
+														<input type="hidden" name="userId"
+															th:value="${usuario.id}" />
+														<div th:if="${usuario.habilitado}">
 															<button class="btn btn-danger col-12">
 																<ion-icon name="trash-outline" size="small"></ion-icon>
 																</ion-icon>
 															</button>
 														</div>
-														<div th:unless="${usuario.habilitado}"> 
+														<div th:unless="${usuario.habilitado}">
 															<button class="btn btn-success col-12">
 																<ion-icon name="refresh-outline" size="small">
 																</ion-icon>
 															</button>
 														</div>
 
-													</form>
-													
-													<!--<a class="btn btn-danger btn-sm"
+													</form> <!--<a class="btn btn-danger btn-sm"
 														th:href="@{/administrador/usuario/eliminar/{id} (id=${usuario.id})}">
 														<ion-icon name="trash-outline" size="small"></ion-icon>
 													</a>-->
@@ -144,84 +147,107 @@
 			</div>
 		</div>
 		<!-- Modal-->
-		<form class="needs-validation" novalidate id="incidenceForm" th:action="@{/administrador/usuario/enlace/guardar}"
+		<form class="needs-validation" novalidate id="incidenceForm"
+			th:action="@{/administrador/usuario/enlace/guardar}"
 			th:object="${user}" method="POST" enctype="multipart/form-data">
-			<div class="modal fade" id="registrarIncidencia" tabindex="-1" role="dialog"
-				aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal fade" id="registrarIncidencia" tabindex="-1"
+				role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+				data-backdrop="static" data-keyboard="false">
 				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">
-								Registrar Enlace
-							</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<h5 class="modal-title" id="exampleModalLabel">Registrar
+								Enlace</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
 							<div class="form-row">
-							
+
 								<div class="col-md-6 mb-3">
-									<label for="nombre">Nombre</label>
-									<input type="text" class="form-control" id="nombre" name="nombre" th:field="*{person.nombre}" placeholder="Carlos" required />
+									<label for="nombre">Nombre</label> <input type="text"
+										class="form-control" id="nombre" name="nombre"
+										th:field="*{person.nombre}" placeholder="Carlos" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-6 mb-3">
-									<label for="apellido1">Apellido Paterno</label>
-									<input type="text" class="form-control" id="apellido1" name="apellido1" th:field="*{person.apellido1}" placeholder="Campos" required />
-									<div class="invalid-feedback">Campo obligatorio</div>
-								</div>
-							</div>
-							<div class="form-row">
-								<div class="col-md-6 mb-3">
-									<label for="apellido2">Apellido Materno</label>
-									<input type="text" class="form-control" id="apellido2" name="apellido2" th:field="*{person.apellido2}" placeholder="Estrada"/>
-									<div class="invalid-feedback">Campo obligatorio</div>
-								</div>
-								<div class="col-md-6 mb-3">
-									<label for="telefono">Numero de teléfono</label>
-									<input type="text" class="form-control" id="telefono" name="telefono" th:field="*{person.telefono}" placeholder="7779854857" required />
-									<div class="invalid-feedback">Campo obligatorio</div>
-								</div>
-							</div>		
-							<div class="form-row">
-								<div class="col-md-6 mb-3">
-									<label for="correo">Correo</label>
-									<input type="text" class="form-control" id="correo" name="correo" th:field="*{correo}" placeholder="ejemplo@gmail.com" required />
-									<div class="invalid-feedback">Campo obligatorio</div>
-								</div>
-								<div class="col-md-6 mb-3">
-									<label for="numeroEmpleado">Numero Empleado</label>
-									<input type="text" class="form-control" id="numeroEmpleado" name="numeroEmpleado"  th:field="*{numeroEmpleado}" placeholder="00023" required />
+									<label for="apellido1">Apellido Paterno</label> <input
+										type="text" class="form-control" id="apellido1"
+										name="apellido1" th:field="*{person.apellido1}"
+										placeholder="Campos" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-md-6 mb-3">
-									<label for="contrasena">Contraseña</label>
-									<input type="text" class="form-control" id="contrasena" name="contrasena" th:field="*{contrasena}" placeholder="*********" required />
+									<label for="apellido2">Apellido Materno</label> <input
+										type="text" class="form-control" id="apellido2"
+										name="apellido2" th:field="*{person.apellido2}"
+										placeholder="Estrada" />
+									<div class="invalid-feedback">Campo obligatorio</div>
+								</div>
+								<div class="col-md-6 mb-3">
+									<label for="telefono">Numero de teléfono</label> <input
+										type="text" class="form-control" id="telefono" name="telefono"
+										th:field="*{person.telefono}" placeholder="7779854857"
+										required />
+									<div class="invalid-feedback">Campo obligatorio</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-md-6 mb-3">
+									<label for="correo">Correo</label> <input type="text"
+										class="form-control" id="correo" name="correo"
+										th:field="*{correo}" placeholder="ejemplo@gmail.com" required />
+									<div class="invalid-feedback">Campo obligatorio</div>
+								</div>
+								<div class="col-md-6 mb-3">
+									<label for="numeroEmpleado">Numero Empleado</label> <input
+										type="text" class="form-control" id="numeroEmpleado"
+										name="numeroEmpleado" th:field="*{numeroEmpleado}"
+										placeholder="00023" required />
+									<div class="invalid-feedback">Campo obligatorio</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-md-6 mb-3">
+									<label for="contrasena">Contraseña</label> <input type="password"
+										class="form-control" id="contrasena" name="contrasena"
+										th:field="*{contrasena}" placeholder="*********" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-6 mb-3">
 									<label for="conrfirmarContrasena">Confirmar contraseña</label>
-									<input type="text" class="form-control" id="confirmarContrasena" placeholder="*********" required />
+									<input type="password" class="form-control"
+										id="confirmarContrasena" placeholder="*********" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-md-6 mb-3">
-									<label for="municipio">Municipio</label>
-									<select class="form-control form-control-lg" th:field="*{municipio.id}" required>
-										<option th:each="tmpMunicipio: ${listaMunicipios}" th:value="${tmpMunicipio.id}"
+									<label for="municipio">Municipio</label> <select
+										class="form-control form-control-lg"
+										th:field="*{municipio.id}" required>
+										<option th:each="tmpMunicipio: ${listaMunicipios}"
+											th:value="${tmpMunicipio.id}"
 											th:text="${tmpMunicipio.nombre}"></option>
 									</select>
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-6 mb-3">
-									<label for="fotografiaEnlace">Fotografía</label>
-									<input class="form-control form-control-lg" type="file" name="fotografiaEnlace" required>
+									<label for="fotografiaEnlace">Fotografía</label> <input
+										class="form-control form-control-lg" type="file"
+										name="fotografiaEnlace" required>
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
+								<label>Rol</label> <select
+										class="form-control form-control-lg" th:field="*{roles}"
+										multiple required>
+										<option th:each="tmpRol: ${listRol}" th:value="${tmpRol.id}"
+											th:text="${tmpRol.authority}" id="optionMark"></option>
+									</select>
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -229,7 +255,8 @@
 								<ion-icon name="close" style="font-size: 20px"></ion-icon>
 								Cerrar
 							</button>
-							<button type="submit" id="registrarIncidencia" class="btn btn-success align-middle">
+							<button type="submit" id="registrarIncidencia"
+								class="btn btn-success align-middle">
 								<ion-icon name="checkmark" style="font-size: 20px"></ion-icon>
 								<span> Registrar</span>
 							</button>
@@ -238,78 +265,99 @@
 				</div>
 			</div>
 		</form>
-		
-			<!--Modal editar-->
-		<form class="needs-validation" novalidate id="editarIncidenciaForm" th:action="@{/administrador/municipio/enlace/guardar}"
+
+		<!--Modal editar-->
+		<form class="needs-validation" novalidate id="editarIncidenciaForm"
+			th:action="@{/administrador/usuario/enlace/guardar}"
 			th:object="${user}" method="POST" enctype="multipart/form-data">
-			<div class="modal fade" id="editarIncidencia" tabindex="-1" role="dialog"
-				aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal fade" id="editarIncidencia" tabindex="-1"
+				role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+				data-backdrop="static" data-keyboard="false">
 				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">
-								Editar Enlace
+							<h5 class="modal-title" id="exampleModalLabel">Editar Enlace
 							</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
 							<div class="form-row">
-								
+
 								<div class="col-md-6 mb-3">
-								<input type="hidden" id="edId" th:field="*{id}"/>
-									<label for="nombre">Nombre</label>
-									<input type="text" class="form-control" id="edNombre" name="nombre" th:field="*{person.nombre}" placeholder="Carlos" required />
+									<input type="hidden" id="edId" th:field="*{id}" /> <label
+										for="nombre">Nombre</label> <input type="text"
+										class="form-control" id="edNombre" name="nombre"
+										th:field="*{person.nombre}" placeholder="Carlos" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-6 mb-3">
-									<label for="apellido1">Apellido Paterno</label>
-									<input type="text" class="form-control" id="edApellido1" name="apellido1" th:field="*{person.apellido1}" placeholder="Campos" required />
+									<label for="apellido1">Apellido Paterno</label> <input
+										type="text" class="form-control" id="edApellido1"
+										name="apellido1" th:field="*{person.apellido1}"
+										placeholder="Campos" required />
+									<div class="invalid-feedback">Campo obligatorio</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-md-6 mb-3">
+									<label for="apellido2">Apellido Materno</label> <input
+										type="text" class="form-control" id="edApellido2"
+										name="apellido2" th:field="*{person.apellido2}"
+										placeholder="Estrada" />
+									<div class="invalid-feedback">Campo obligatorio</div>
+								</div>
+								<div class="col-md-6 mb-3">
+									<label for="telefono">Numero de teléfono</label> <input
+										type="text" class="form-control" id="edTelefono"
+										name="telefono" th:field="*{person.telefono}"
+										placeholder="7779854857" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-md-6 mb-3">
-									<label for="apellido2">Apellido Materno</label>
-									<input type="text" class="form-control" id="edApellido2" name="apellido2" th:field="*{person.apellido2}" placeholder="Estrada"/>
+									<label for="correo">Correo</label> <input type="text"
+										class="form-control" id="edCorreo" name="correo"
+										th:field="*{correo}" placeholder="ejemplo@gmail.com" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-6 mb-3">
-									<label for="telefono">Numero de teléfono</label>
-									<input type="text" class="form-control" id="edTelefono" name="telefono" th:field="*{person.telefono}" placeholder="7779854857" required />
-									<div class="invalid-feedback">Campo obligatorio</div>
-								</div>
-							</div>		
-							<div class="form-row">
-								<div class="col-md-6 mb-3">
-									<label for="correo">Correo</label>
-									<input type="text" class="form-control" id="edCorreo" name="correo" th:field="*{correo}" placeholder="ejemplo@gmail.com" required />
-									<div class="invalid-feedback">Campo obligatorio</div>
-								</div>
-								<div class="col-md-6 mb-3">
-									<label for="numeroEmpleado">Numero Empleado</label>
-									<input type="text" class="form-control" id="edNumeroEmpleado" name="numeroEmpleado"  th:field="*{numeroEmpleado}" placeholder="00023" required />
+									<label for="numeroEmpleado">Numero Empleado</label> <input
+										type="text" class="form-control" id="edNumeroEmpleado"
+										name="numeroEmpleado" th:field="*{numeroEmpleado}"
+										placeholder="00023" required />
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 							</div>
-							<div class="form-row">
-								
-							</div>
+							<div class="form-row"></div>
 							<div class="form-row">
 								<div class="col-md-6 mb-3">
-									<label for="municipio">Municipio</label>
-									<select class="form-control form-control-lg" id="edMunicipio" th:field="*{municipio.id}" required>
-										<option th:each="tmpMunicipio: ${listaMunicipios}" th:value="${tmpMunicipio.id}"
+									<label for="municipio">Municipio</label> <select
+										class="form-control form-control-lg" id="edMunicipio"
+										th:field="*{municipio.id}" required>
+										<option th:each="tmpMunicipio: ${listaMunicipios}"
+											th:value="${tmpMunicipio.id}"
 											th:text="${tmpMunicipio.nombre}"></option>
 									</select>
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
 								<div class="col-md-6 mb-3">
-									<label for="fotografiaEnlace">Fotografía</label>
-									<input class="form-control form-control-lg" id="edFoto" type="file" name="fotografiaEnlace" required>
+									<label for="fotografiaEnlace">Fotografía</label> 
+									<input
+										class="form-control form-control-lg" id="edFoto" type="file"
+										name="fotografiaEnlace" hidden>
+									<label class="form-control" id="foto1" for="edFoto"></label>
 									<div class="invalid-feedback">Campo obligatorio</div>
 								</div>
+								<label>Rol</label> <select
+										class="form-control form-control-lg" th:field="*{roles}"
+										multiple required>
+										<option th:each="tmpRol: ${listRol}" th:value="${tmpRol.id}"
+											th:text="${tmpRol.authority}" id="optionMark"></option>
+									</select>
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -317,7 +365,8 @@
 								<ion-icon name="close" style="font-size: 20px"></ion-icon>
 								Cerrar
 							</button>
-							<button type="submit" id="modificarIncidencia" class="btn btn-success align-middle">
+							<button type="submit" id="modificarIncidencia"
+								class="btn btn-success align-middle">
 								<ion-icon name="checkmark" style="font-size: 20px"></ion-icon>
 								<span>Actualizar</span>
 							</button>
@@ -329,13 +378,15 @@
 	</div>
 
 	<!--Ionicons-->
-	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	<script type="module"
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
 	<!--Toast-->
 	<script th:src="@{/js/toast.min.js}"></script>
-	
-	
+
+
 	<script th:if="${msg_success != null}">
 		new Toast({
 			timer:3000,
@@ -355,15 +406,18 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
 		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
 		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 		crossorigin="anonymous"></script>
-		
-		<script>
+
+	<script>
 		$(document).ready(() => {
+			
 			$("#registrarIncidencia").on("click", (event) => {
 				$("#incidenceForm").submit(function (e) {
 					if (!document.getElementById("incidenceForm").checkValidity()) {
@@ -391,10 +445,10 @@
 				let apellido2 = $(this).data("apellido2")
 				let telefono = $(this).data("telefono")
 				let correo = $(this).data("correo")
-				let numeroEmpleado = $(this).data("numeroEmpleado")
+				let numeroEmpleado = $(this).data("empleado")
 				let municipio = $(this).data("municipio")
 				let foto = $(this).data("foto")
-				console.log(numeroEmpleado)
+				
 				$("#edId").val(id)
 				$("#edNombre").val(nombre);
 				$("#edApellido1").val(apellido1)
@@ -402,8 +456,9 @@
 				$("#edTelefono").val(telefono)
 				$("#edCorreo").val(correo)
 				$("#edNumeroEmpleado").val(numeroEmpleado)
-				$("#edMunicipio").val(municipio)
-				$("#edFoto").val(foto)
+				$(`select option[value="${municipio}"]`).attr("selected", true);
+				$("#foto1").text(foto)
+				$("#foto1").val(foto)
 				
 				if(habilitado){
 					$("#enabled").prop('checked',true)

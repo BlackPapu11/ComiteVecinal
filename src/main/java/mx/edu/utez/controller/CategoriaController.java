@@ -39,6 +39,7 @@ public class CategoriaController {
 	@GetMapping("/")
 	public String listarCategorias(Categoria categoria, Model model, Pageable pageable,Authentication authentication, HttpSession session) {
 		String username = authentication.getName();
+		session.setAttribute("activeRol", authentication.getAuthorities().iterator().next().getAuthority());
 		for(GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
 			System.out.println("Role: " + grantedAuthority.getAuthority());
 		}

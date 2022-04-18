@@ -98,6 +98,31 @@
           >Incidencias</a
         >
       </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" th:href="@{/comite/integrante}"
+          >Integrantes</a
+        >
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto" th:if="${session.activeRol} == 'ROL_ADMINISTRADOR'">
+      <li class="nav-item active">
+        <a class="nav-link text-light" th:href="@{/administrador/}"
+          >Categorias<span class="sr-only">(current)</span></a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" th:href="@{/administrador/municipio/}">Municipios</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" th:href="@{/administrador/usuario/}"
+          >Acceso a usuarios</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" th:href="@{/administrador/usuario/enlace}"
+          >Enlaces</a
+        >
+      </li>
     </ul>
     <ul class="navbar-nav mr-automy-2 my-lg-0">
       <li class="nav-item" sec:authorize="isAnonymous()">

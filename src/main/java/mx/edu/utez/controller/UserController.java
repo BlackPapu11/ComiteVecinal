@@ -28,9 +28,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mx.edu.utez.model.Municipio;
 import mx.edu.utez.model.Person;
+import mx.edu.utez.model.Role;
 import mx.edu.utez.model.User;
 import mx.edu.utez.service.MunicipioServiceImpl;
 import mx.edu.utez.service.PersonServiceImpl;
+import mx.edu.utez.service.RoleServiceImpl;
 import mx.edu.utez.service.UserServiceImpl;
 import mx.edu.utez.util.ImagenUtileria;
 
@@ -45,10 +47,10 @@ public class UserController {
 	private MunicipioServiceImpl municipioService;
 	
 	@Autowired
-	private PersonServiceImpl personService;
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private RoleServiceImpl roleService;
 
 	@GetMapping("/usuario/")
 	public String listarUsusarios(User user, Model model, Pageable pageable, Authentication authentication,
@@ -104,6 +106,14 @@ public class UserController {
 	@GetMapping("/usuario/enlace")
 	public String listarEnlaces(User user, Person person, Model model, Pageable pageable, Authentication authentication,
 			HttpSession session) {
+		List<Role> listRol = roleService.listar();
+		List<Role> roleEnlace = new LinkedList<>();
+		for(Role role: listRol) {
+			if(role.getAuthority().equals("ROL_ENLACE")) {
+				roleEnlace.add(role);
+			}
+		}
+		model.addAttribute("listRol",roleEnlace);
 		model.addAttribute("listaMunicipios", municipioService.listar());
 		String username = authentication.getName();
 		for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
@@ -134,15 +144,18 @@ public class UserController {
 			Model model, Pageable pageable, Authentication authentication, HttpSession session,
 			@RequestParam("fotografiaEnlace") MultipartFile multipartFile) {
 		
-		System.err.print("-----------id--------------------"+user.getId());
 		
 		if (user.getId() == null) { // Create
 			user.setHabilitado(true);
 			user.setContrasena(passwordEncoder.encode(user.getContrasena()));
 			// user.setPerson(person);
 		} else { // Update
-			// User userExistente = userService.mostrar(user.getId());
-			// user.setHabilitado(userExistente.isHabilitado());
+			User userExistente = userService.buscarPorCorreo(user.getCorreo());
+			user.setContrasena(userExistente.getContrasena());
+			user.setHabilitado(userExistente.isHabilitado());
+			if(multipartFile.isEmpty()) {
+				user.setFoto(userExistente.getFoto());
+			}
 		}
 		
 
@@ -157,6 +170,7 @@ public class UserController {
 		boolean respuesta = userService.guardar(user);
 		
 		if(respuesta) {
+			System.err.println(user.getRoles());			
 			redirectAttributes.addFlashAttribute("msg_success","¡Se ha realizado el registro correctamente!");
 			return "redirect:/administrador/usuario/enlace";
 		}else {
