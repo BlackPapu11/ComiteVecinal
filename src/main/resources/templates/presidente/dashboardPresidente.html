@@ -57,7 +57,10 @@
               <div class="row mt-1">
                 <div class="col">
                   <div class="table-responsive">
-                    <table class="table table-sm table-hover" id="incidenciasTable">
+                    <table
+                      class="table table-sm table-hover"
+                      id="incidenciasTable"
+                    >
                       <thead class="thead-light">
                         <tr>
                           <th scope="col">#</th>
@@ -110,7 +113,7 @@
                               th:attr="data-id=${incidence.id},data-nombre=${incidence.nombre},
                               data-descripcion=${incidence.descripcion},data-category=${incidence.categoria.nombre},
                               data-status=${incidence.status},data-habilitado=${incidence.habilitado},
-                              data-fecha=${incidence.fechaRegistro}"
+                              data-fecha=${incidence.fechaRegistro},data-costs=${incidence.costo},data-pago=${incidence.pago}"
                             >
                               <ion-icon
                                 name="search-outline"
@@ -561,6 +564,18 @@
                     >Anexos</a
                   >
                 </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="payment-tab"
+                    data-toggle="tab"
+                    href="#payment"
+                    role="tab"
+                    aria-controls="contact"
+                    aria-selected="false"
+                    >Pago</a
+                  >
+                </li>
               </ul>
               <div class="tab-content" id="myTabContent">
                 <div
@@ -602,6 +617,13 @@
                           >Descripción</label
                         >
                         <p id="dtDescripcion"></p>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="col-md-12 mb-3">
+                        <label class="font-weight-bold">Pago</label>
+                        <p id="showMonto"></p>
+                        <p id="showPagado"></p>
                       </div>
                     </div>
                   </div>
@@ -680,6 +702,24 @@
                     </div>
                   </div>
                 </div>
+                <div
+                  class="tab-pane fade"
+                  id="payment"
+                  role="tabpanel"
+                  aria-labelledby="contact-tab"
+                >
+                  <div class="form-row mb-3 mt-3" id="withoutDebt">
+                    <div class="col">
+                      <label>Monto a pagar:</label>
+                      <label class="form-control" id="incidenceCosts"></label>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col" id="isDebt">
+                      <div id="paypal-button-container"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -738,43 +778,79 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AZWlANyZv9zv6x46wMTV6qjSgVLqZtWhjyVQFGU3XdUTdg4OFRp1HRTbdTkEx3STFnTtbs03-iAY5-bq&components=buttons&disable-funding=oxxo&currency=MXN"></script>
+    <script>
+      $("#incidenciasTable").DataTable({
+        language: {
+          sProcessing: "Procesando...",
+          sLengthMenu: "Mostrar _MENU_ registros",
+          sZeroRecords: "No se encontraron resultados",
+          sEmptyTable: "Ningún dato disponible en esta tabla",
+          sInfo:
+            "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+          sInfoEmpty:
+            "Mostrando registros del 0 al 0 de un total de 0 registros",
+          sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+          sInfoPostFix: "",
+          sSearch: "Buscar:",
+          sUrl: "",
+          sInfoThousands: ",",
+          sLoadingRecords: "Cargando...",
+          oPaginate: {
+            sFirst: "Primero",
+            sLast: "Último",
+            sNext: "Siguiente",
+            sPrevious: "Anterior",
+          },
+          oAria: {
+            sSortAscending:
+              ": Activar para ordenar la columna de manera ascendente",
+            sSortDescending:
+              ": Activar para ordenar la columna de manera descendente",
+          },
+        },
+      });
+
+      paypal
+        .Buttons({
+          style: {
+            layout: "vertical",
+            color: "blue",
+            shape: "rect",
+          },
+          createOrder: function (data, actions) {
+            // Set up the transaction
+            return actions.order.create({
+              purchase_units: [
+                {
+                  amount: {
+                    value: parseFloat($("#incidenceCosts").text()),
+                  },
+                },
+              ],
+            });
+          },
+          onApprove: function (data, actions) {
+            let id = $("#incidenciaFormField").val();
+            fetch(`http://localhost:8080/president/atender/${id}`)
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data, id);
+                window.location.reload();
+              });
+          },
+        })
+        .render("#paypal-button-container");
+    </script>
     <script th:inline="javascript">
       const user = /*[[${session.user}]]*/ "default";
-      $(document).ready(() => {
+
+      $(document).ready(function () {
         $(".icon-inner").addClass("icon-inner-in");
 
-        $("#incidenciasTable").DataTable({
-          language: {
-            sProcessing: "Procesando...",
-            sLengthMenu: "Mostrar _MENU_ registros",
-            sZeroRecords: "No se encontraron resultados",
-            sEmptyTable: "Ningún dato disponible en esta tabla",
-            sInfo:
-              "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-            sInfoEmpty:
-              "Mostrando registros del 0 al 0 de un total de 0 registros",
-            sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
-            sInfoPostFix: "",
-            sSearch: "Buscar:",
-            sUrl: "",
-            sInfoThousands: ",",
-            sLoadingRecords: "Cargando...",
-            oPaginate: {
-              sFirst: "Primero",
-              sLast: "Último",
-              sNext: "Siguiente",
-              sPrevious: "Anterior",
-            },
-            oAria: {
-              sSortAscending:
-                ": Activar para ordenar la columna de manera ascendente",
-              sSortDescending:
-                ": Activar para ordenar la columna de manera descendente",
-            },
-          },
-        });
-
         $(".btn-detalles").on("click", function () {
+          console.log("first")
           let id = $(this).data("id");
           let nombre = $(this).data("nombre");
           let category = $(this).data("category");
@@ -782,6 +858,10 @@
           let fecha = $(this).data("fecha");
           let status = $(this).data("status");
           let habilitado = $(this).data("habilitado");
+          let costo = $(this).data("costs");
+          let pago = $(this).data("pago");
+          $("#payment-tab").addClass("d-none");
+          $("#payment").addClass("d-none");
           $("#incidenciaFormField").val(id);
           $("#dtNombre").text(nombre);
           $("#dtDescripcion").text(desc);
@@ -795,6 +875,9 @@
           let statusBadge = ``;
           $("#dtStatus").html("");
           $("#newComment").addClass("d-none");
+          $("#showMonto").text("0.00 MXN");
+          $("#incidenceCosts").text("0.00 MXN");
+          $("#showPagado").html("");
           switch (status) {
             case 1:
               $("#newComment").removeClass("d-none");
@@ -804,9 +887,40 @@
               statusBadge = `<span class="badge badge-secondary">Cancelada</span>`;
               break;
             case 3:
+              if (costo < 0) {
+                $("#showMonto").text("0.00 MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-info" role="alert">No se requiere de un pago para esta incidencia</div>`
+                );
+              } else if (pago && costo >= 0) {
+                $("#showMonto").text(costo + "MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-success" role="alert">El pago ya fue realizado</div>`
+                );
+              } else if (costo >= 0 && !pago) {
+                $("#showMonto").text(costo + "MXN");
+                $("#incidenceCosts").text(costo + "MXN");
+                $("#payment-tab").removeClass("d-none");
+                $("#payment").removeClass("d-none");
+                $("#showPagado").html(
+                  `<div class="alert alert-warning" role="alert">El pago aún no se ha realizado</div>`
+                );
+              }
               statusBadge = `<span class="badge badge-info">Canalizada</span>`;
               break;
             case 4:
+              if (costo < 0) {
+                $("#showMonto").text("0.00 MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-info" role="alert">No se requiere de un pago para esta incidencia</div>`
+                );
+              } else if (pago && costo >= 0) {
+                $("#incidenceCosts").text(costo + "MXN");
+                $("#showMonto").text(costo + "MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-success" role="alert">El pago ya fue realizado</div>`
+                );
+              }
               statusBadge = `<span class="badge badge-primary">Atendida</span>`;
               break;
           }

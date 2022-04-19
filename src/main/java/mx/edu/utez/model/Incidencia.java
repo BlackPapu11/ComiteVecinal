@@ -166,12 +166,4 @@ public class Incidencia {
 		return pago;
 	}
 
-	public void print() {
-		System.out.println(id
-				+ " \nn- " + nombre
-				+ " \nd- " + descripcion
-				+ " \nc- " + categoria.getId()
-				+ " \ncom- " + comentario);
-	}
-
 }

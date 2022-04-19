@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,7 +49,7 @@ public class IncidenciasService {
 
     @Transactional(readOnly = true)
     public List<Incidencia> findAll(String email) {
-        return incidenciaRepository.findAllByUserComiteUserCorreo(email);
+        return incidenciaRepository.findAllByUserComiteUserCorreoOrderByStatusAscHabilitadoDesc(email);
     }
 
     @Transactional(readOnly = true)
@@ -111,6 +112,17 @@ public class IncidenciasService {
             anexoRepository.saveAllAndFlush(anexos);
         }
         return saveIncidencia;
+    }
+
+    @Transactional(rollbackFor = { SQLException.class })
+    public ResponseEntity<Object> atendida(Long id) {
+        Incidencia incidencia = incidenciaRepository.findById(id).get();
+        incidencia.setStatus(4);
+        incidencia.setPago(true);
+        Map<String, Object> data = new HashMap<>();
+        data.put("error", false);
+        incidenciaRepository.saveAndFlush(incidencia);
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = { SQLException.class })
