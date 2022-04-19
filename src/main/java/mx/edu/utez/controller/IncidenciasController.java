@@ -41,6 +41,11 @@ public class IncidenciasController {
         return "/presidente/dashboardPresidente";
     }
 
+    @GetMapping("/atender/{id}")
+    public ResponseEntity<Object> incidenciaAtendida(@PathVariable("id") Long id) {
+        return service.atendida(id);
+    }
+
     @PostMapping(value = "/")
     public RedirectView saveIncidencia(@ModelAttribute("incidencia") Incidencia incidencia,
             @RequestParam("files") MultipartFile[] files, RedirectAttributes attrs, Authentication authentication) {

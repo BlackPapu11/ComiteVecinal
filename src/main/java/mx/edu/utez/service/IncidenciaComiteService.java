@@ -35,7 +35,7 @@ public class IncidenciaComiteService {
 
     @Transactional(readOnly = true)
     public Set<Incidencia> findByComite(Long id) {
-        return incidenciaRepository.findAllByUserComiteComiteIdAndHabilitado(id, true);
+        return incidenciaRepository.findAllByUserComiteComiteIdAndHabilitadoOrderByStatusAscHabilitadoDesc(id, true);
     }
 
     @Transactional(readOnly = true)

@@ -11,6 +11,6 @@ import mx.edu.utez.model.Incidencia;
 public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     boolean existsById(long id);
     Optional<Incidencia> findById(long id);
-    List<Incidencia> findAllByUserComiteUserCorreo(String email);
-    Set<Incidencia> findAllByUserComiteComiteIdAndHabilitado(Long id, Boolean habilitado);
+    List<Incidencia> findAllByUserComiteUserCorreoOrderByStatusAscHabilitadoDesc(String email);
+    Set<Incidencia> findAllByUserComiteComiteIdAndHabilitadoOrderByStatusAscHabilitadoDesc(Long id, Boolean habilitado);
 }

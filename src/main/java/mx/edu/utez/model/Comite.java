@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "comites")
 public class Comite {
@@ -27,6 +29,7 @@ public class Comite {
 	private boolean status;
 
 	@OneToMany(mappedBy = "comite", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Set<UserComite> userComite;
 
 	@ManyToOne

@@ -15,6 +15,7 @@
       th:href="@{/imagenes/trabajo-en-equipo.ico}"
       type="image/x-icon"
     />
+    <link rel="stylesheet" th:href="@{/css/datatables.css}" />
   </head>
 
   <body>
@@ -110,8 +111,8 @@
               <div class="row mt-4">
                 <div class="col">
                   <div class="table-responsive">
-                    <table class="table">
-                      <thead>
+                    <table class="table table-hover table-sm dataTable">
+                      <thead class="thead-light">
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">Nombre</th>
@@ -168,7 +169,7 @@
                                 th:attr="data-id=${incidence.id},data-nombre=${incidence.nombre},
                             data-descripcion=${incidence.descripcion},data-category=${incidence.categoria.nombre},
                                   data-status=${incidence.status},data-habilitado=${incidence.habilitado},
-                                  data-fecha=${incidence.fechaRegistro}"
+                                  data-fecha=${incidence.fechaRegistro},data-costs=${incidence.costo},data-pago=${incidence.pago}"
                               >
                                 <ion-icon
                                   name="search-outline"
@@ -296,6 +297,13 @@
                           >Descripción</label
                         >
                         <p id="dtDescripcion"></p>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="col-md-12 mb-3">
+                        <label class="font-weight-bold">Pago</label>
+                        <p id="showMonto"></p>
+                        <p id="showPagado"></p>
                       </div>
                     </div>
                     <form
@@ -467,10 +475,11 @@
     </script>
 
     <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
       crossorigin="anonymous"
     ></script>
+    <script th:src="@{/js/datatables.js}"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -481,7 +490,38 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
-
+    <script>
+      $(".dataTable").DataTable({
+        language: {
+          sProcessing: "Procesando...",
+          sLengthMenu: "Mostrar _MENU_ registros",
+          sZeroRecords: "No se encontraron resultados",
+          sEmptyTable: "Ningún dato disponible en esta tabla",
+          sInfo:
+            "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+          sInfoEmpty:
+            "Mostrando registros del 0 al 0 de un total de 0 registros",
+          sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+          sInfoPostFix: "",
+          sSearch: "Buscar:",
+          sUrl: "",
+          sInfoThousands: ",",
+          sLoadingRecords: "Cargando...",
+          oPaginate: {
+            sFirst: "Primero",
+            sLast: "Último",
+            sNext: "Siguiente",
+            sPrevious: "Anterior",
+          },
+          oAria: {
+            sSortAscending:
+              ": Activar para ordenar la columna de manera ascendente",
+            sSortDescending:
+              ": Activar para ordenar la columna de manera descendente",
+          },
+        },
+      });
+    </script>
     <script th:inline="javascript">
       const user = /*[[${session.user}]]*/ "default";
       $(document).ready(function () {
@@ -507,6 +547,8 @@
           let fecha = $(this).data("fecha");
           let status = $(this).data("status");
           let habilitado = $(this).data("habilitado");
+          let costo = $(this).data("costs");
+          let pago = $(this).data("pago");
           $("#incidenciaFormField").val(id);
           $("#dtNombre").text(nombre);
           $("#dtDescripcion").text(desc);
@@ -521,6 +563,8 @@
           $("#dtStatus").html("");
           $("#atenttionForm").addClass("d-none");
           $("#newComment").addClass("d-none");
+          $("#showMonto").text("0.00 MXN");
+          $("#showPagado").html("");
           switch (status) {
             case 1:
               $("#atenttionForm").removeClass("d-none");
@@ -531,11 +575,46 @@
               statusBadge = `<span class="badge badge-secondary">Cancelada</span>`;
               break;
             case 3:
+              if (costo < 0) {
+                $("#showMonto").text("0.00 MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-info" role="alert">No se requiere de un pago para esta incidencia</div>`
+                );
+              } else if (pago && costo >= 0) {
+                $("#showMonto").text(costo + "MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-success" role="alert">El pago ya fue realizado</div>`
+                );
+              } else if (costo >= 0 && !pago) {
+                $("#showMonto").text(costo + "MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-warning" role="alert">El pago aún no se ha realizado</div>`
+                );
+              }
               statusBadge = `<span class="badge badge-info">Canalizada</span>`;
               break;
             case 4:
+              if (costo < 0) {
+                $("#showMonto").text("0.00 MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-info" role="alert">No se requiere de un pago para esta incidencia</div>`
+                );
+              } else if (pago && costo >= 0) {
+                $("#showMonto").text(costo + "MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-success" role="alert">El pago ya fue realizado</div>`
+                );
+              } else if (costo >= 0 && !pago) {
+                $("#showMonto").text(costo + "MXN");
+                $("#showPagado").html(
+                  `<div class="alert alert-success" role="alert">El pago ya fue realizado</div>`
+                );
+              }
               statusBadge = `<span class="badge badge-primary">Atendida</span>`;
               break;
+          }
+          if (costo >= 0) {
+            $("#incidenceCosts").text(costo + "MXN");
           }
           $("#dtStatus").html(statusBadge);
           let anexosCards = "";
